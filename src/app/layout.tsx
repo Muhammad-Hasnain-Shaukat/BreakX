@@ -5,7 +5,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { Navbar } from '@/components/ui/Navbar';
 import { Footer } from '@/components/ui/Footer';
 import { CosmicStarsBackground } from '@/components/ui/CosmicStarsBackground';
-import { BreakingStarCursor } from '@/components/ui/BreakingStarCursor';
+import { NeonCursorGlow } from '@/components/ui/NeonCursorGlow';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -66,7 +66,7 @@ export default function RootLayout({
       <body className="bg-[var(--bg-base)] text-[var(--text-primary)] min-h-screen flex flex-col antialiased selection:bg-primary-500 selection:text-white relative transition-colors duration-300">
         <ThemeProvider>
           <CosmicStarsBackground />
-          <BreakingStarCursor />
+          <NeonCursorGlow />
           <Navbar />
           <main className="flex-grow pt-24">{children}</main>
           <Footer />
