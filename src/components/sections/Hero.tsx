@@ -12,7 +12,7 @@ export const HeroSection: React.FC = () => {
   const isDark = theme === 'dark';
 
   return (
-    <section className="relative min-h-[85vh] lg:min-h-[88vh] flex flex-col justify-center items-center overflow-hidden pt-1 pb-6 sm:py-8 lg:py-14">
+    <section className="relative min-h-[82vh] lg:min-h-[88vh] flex flex-col justify-center items-center overflow-hidden pt-1 pb-6 sm:py-8 lg:py-12">
       {/* 3D Minimalist Ambient Glow Engine */}
       <Minimal3DBackground />
 
@@ -149,14 +149,14 @@ export const HeroSection: React.FC = () => {
 
 
         {/* =========================================================================
-            MOBILE LAYOUT (< lg): Optimized First Screen Flow
+            MOBILE LAYOUT (< lg): Responsive Dynamic Proportion Flow
             1. Tagline Bar -> 2. 3D Computer Console -> 3. Stacked Headline -> 4. Subtitle -> 5. Buttons (Grid 50/50)
            ========================================================================= */}
-        <div className="lg:hidden flex flex-col items-center text-center space-y-3 max-w-sm mx-auto">
+        <div className="lg:hidden flex flex-col items-center text-center space-y-3.5 xs:space-y-4 sm:space-y-6 max-w-sm sm:max-w-lg md:max-w-xl mx-auto w-full px-2">
           {/* 1. Tagline Badge */}
-          <div className="inline-flex items-center pt-1">
+          <div className="inline-flex items-center">
             <div
-              className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wide backdrop-blur-xl transition-all duration-300 ${
+              className={`inline-flex items-center space-x-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-extrabold tracking-wide backdrop-blur-xl transition-all duration-300 ${
                 isDark
                   ? 'bg-[#030712]/90 border border-cyan-400/50 shadow-[0_0_15px_rgba(0,240,255,0.3)]'
                   : 'bg-white/95 border border-blue-300 shadow-[0_4px_15px_rgba(37,99,235,0.12)]'
@@ -169,14 +169,14 @@ export const HeroSection: React.FC = () => {
             </div>
           </div>
 
-          {/* 2. Sleek Compact Computer Console (Front-facing & perfectly centered) */}
+          {/* 2. Sleek Responsive Computer Console */}
           <div className="w-full flex justify-center py-0.5">
             <CyberComputingDevice3D isMobileCompact={true} />
           </div>
 
           {/* 3. Bold Stacked Headline */}
-          <div className="space-y-0.5 pt-0.5">
-            <h1 className="font-display font-black text-3xl sm:text-4xl tracking-tight leading-none">
+          <div className="space-y-0.5">
+            <h1 className="font-display font-black text-3xl xs:text-4xl sm:text-5xl tracking-tight leading-none">
               <span className={isDark ? 'text-white' : 'text-slate-900'}>BREAK </span>
               <span
                 className={`text-transparent bg-clip-text ${
@@ -192,7 +192,7 @@ export const HeroSection: React.FC = () => {
 
           {/* 4. Description */}
           <p
-            className={`font-normal text-xs max-w-[290px] mx-auto leading-relaxed ${
+            className={`font-normal text-xs sm:text-sm md:text-base max-w-[300px] sm:max-w-md mx-auto leading-relaxed ${
               isDark ? 'text-slate-300' : 'text-slate-600'
             }`}
           >
@@ -200,10 +200,10 @@ export const HeroSection: React.FC = () => {
           </p>
 
           {/* 5. Two Equal-Length Buttons in Strict 50/50 CSS Grid */}
-          <div className="grid grid-cols-2 gap-2.5 w-full max-w-[310px] mx-auto pt-1">
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 w-full max-w-[310px] xs:max-w-[340px] sm:max-w-[400px] mx-auto pt-0.5">
             <Link
               href="/project-request"
-              className="w-full h-11 px-2.5 rounded-full bg-gradient-to-r from-primary-600 via-primary-500 to-accent-purple text-white font-bold text-xs shadow-neon-blue flex items-center justify-center space-x-1.5 border border-primary-400/40 box-border text-center"
+              className="w-full h-11 sm:h-12 px-2.5 sm:px-4 rounded-full bg-gradient-to-r from-primary-600 via-primary-500 to-accent-purple text-white font-bold text-xs sm:text-sm shadow-neon-blue flex items-center justify-center space-x-1.5 border border-primary-400/40 box-border text-center"
             >
               <span className="truncate">Start Project</span>
               <div className="w-5 h-5 rounded-full bg-white/20 flex-shrink-0 flex items-center justify-center">
@@ -213,9 +213,9 @@ export const HeroSection: React.FC = () => {
 
             <Link
               href="/work"
-              className={`w-full h-11 px-2.5 rounded-full font-bold text-xs flex items-center justify-center space-x-1.5 backdrop-blur-xl border box-border text-center ${
+              className={`w-full h-11 sm:h-12 px-2.5 sm:px-4 rounded-full font-bold text-xs sm:text-sm flex items-center justify-center space-x-1.5 backdrop-blur-xl border box-border text-center ${
                 isDark
-                  ? 'bg-[#050B18]/90 border-cyan-400/50 text-white shadow-[0_0_12px_rgba(0,240,255,0.2)]'
+                  ? 'bg-[#050B18]/90 border border-cyan-400/50 text-white shadow-[0_0_12px_rgba(0,240,255,0.2)]'
                   : 'bg-white/95 border-slate-300 text-slate-800 shadow-sm'
               }`}
             >
@@ -232,9 +232,9 @@ export const HeroSection: React.FC = () => {
         </div>
 
         {/* 6. Minimalist Trusted Companies Strip */}
-        <div id="clients" className="mt-8 lg:mt-14 pt-4 border-t border-white/5">
+        <div id="clients" className="mt-6 sm:mt-10 lg:mt-14 pt-4 sm:pt-6 border-t border-white/5">
           <p
-            className={`text-center text-[9px] sm:text-[10px] uppercase tracking-widest font-extrabold mb-3.5 ${
+            className={`text-center text-[9px] sm:text-[10px] uppercase tracking-widest font-extrabold mb-3 sm:mb-4 ${
               isDark ? 'text-cyan-300/80' : 'text-blue-600/80'
             }`}
           >

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
-import { Activity, Terminal, Shield, Zap } from 'lucide-react';
+import { Activity, Terminal } from 'lucide-react';
 
 interface CyberComputingDevice3DProps {
   className?: string;
@@ -19,7 +19,7 @@ export const CyberComputingDevice3D: React.FC<CyberComputingDevice3DProps> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  // 3D Tilt State (Front-facing default for mobile clean symmetry, interactive on desktop)
+  // 3D Tilt State (Front-facing on mobile for symmetry, parallax on desktop)
   const [rotX, setRotX] = useState<number>(0);
   const [rotY, setRotY] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<'AI_CORE' | 'GRAPHS' | 'QUANTUM'>('AI_CORE');
@@ -286,7 +286,7 @@ export const CyberComputingDevice3D: React.FC<CyberComputingDevice3DProps> = ({
       onMouseLeave={handleMouseLeave}
       className={`relative w-full select-none ${
         isMobileCompact
-          ? 'max-w-[310px] xs:max-w-[340px] sm:max-w-[380px]'
+          ? 'max-w-[320px] xs:max-w-[360px] sm:max-w-[440px] md:max-w-[500px]'
           : 'max-w-[480px] lg:max-w-[560px]'
       } mx-auto perspective-[1200px] group ${className}`}
     >
@@ -316,14 +316,14 @@ export const CyberComputingDevice3D: React.FC<CyberComputingDevice3DProps> = ({
           }`}
         >
           {/* Header Bar */}
-          <div className="flex items-center justify-between px-2 py-1 mb-1 border-b border-white/10 text-[8px] sm:text-[9px] font-mono tracking-wider">
+          <div className="flex items-center justify-between px-2 py-1 mb-1 border-b border-white/10 text-[8px] sm:text-[10px] font-mono tracking-wider">
             <div className="flex items-center space-x-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#34D399]" />
               <span className={isDark ? 'text-cyan-300 font-bold' : 'text-blue-700 font-bold'}>
                 BREAKX // COMPUTE CORE
               </span>
             </div>
-            <div className="flex items-center space-x-2 text-slate-400 text-[8px]">
+            <div className="flex items-center space-x-2 text-slate-400 text-[8px] sm:text-[9px]">
               <span className="text-emerald-400 font-semibold">{latencyVal}ms</span>
             </div>
           </div>
@@ -349,11 +349,13 @@ export const CyberComputingDevice3D: React.FC<CyberComputingDevice3DProps> = ({
               </span>
             </div>
 
-            {/* Live Canvas */}
+            {/* Live Canvas with fluid responsive height */}
             <canvas
               ref={canvasRef}
               className={`w-full ${
-                isMobileCompact ? 'h-[125px] xs:h-[140px]' : 'h-[180px] lg:h-[280px]'
+                isMobileCompact
+                  ? 'h-[135px] xs:h-[155px] sm:h-[185px] md:h-[220px]'
+                  : 'h-[180px] lg:h-[280px]'
               } block relative z-10`}
             />
 
@@ -379,7 +381,7 @@ export const CyberComputingDevice3D: React.FC<CyberComputingDevice3DProps> = ({
             <div className="absolute bottom-0 inset-x-0 z-20 px-2 py-0.5 sm:py-1 flex items-center justify-between bg-black/70 backdrop-blur-sm border-t border-cyan-400/20 text-[7px] sm:text-[8px] font-mono text-cyan-400/90">
               <div className="flex items-center space-x-1">
                 <Activity className="w-2 h-2 text-cyan-400 animate-pulse" />
-                <span className="truncate max-w-[160px]">TELEMETRY: STREAMING</span>
+                <span className="truncate max-w-[160px] sm:max-w-none">TELEMETRY: STREAMING</span>
               </div>
               <span className="text-purple-300 font-bold text-[7px] sm:text-[8px]">GPU V4</span>
             </div>
@@ -389,12 +391,12 @@ export const CyberComputingDevice3D: React.FC<CyberComputingDevice3DProps> = ({
           </div>
 
           {/* Bottom Tabs */}
-          <div className="mt-1 pt-1 flex items-center justify-between px-1 text-[7px] sm:text-[8px] font-mono text-slate-400">
-            <div className="flex items-center space-x-1">
+          <div className="mt-1 pt-1 flex items-center justify-between px-1 text-[7px] sm:text-[9px] font-mono text-slate-400">
+            <div className="flex items-center space-x-1 sm:space-x-1.5">
               <button
                 type="button"
                 onClick={() => setActiveTab('AI_CORE')}
-                className={`px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] transition-all font-bold ${
+                className={`px-1.5 py-0.5 sm:px-2 sm:py-0.8 rounded text-[7px] sm:text-[8px] transition-all font-bold ${
                   activeTab === 'AI_CORE'
                     ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/50'
                     : 'hover:text-white'
@@ -405,7 +407,7 @@ export const CyberComputingDevice3D: React.FC<CyberComputingDevice3DProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab('GRAPHS')}
-                className={`px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] transition-all font-bold ${
+                className={`px-1.5 py-0.5 sm:px-2 sm:py-0.8 rounded text-[7px] sm:text-[8px] transition-all font-bold ${
                   activeTab === 'GRAPHS'
                     ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/50'
                     : 'hover:text-white'
@@ -416,7 +418,7 @@ export const CyberComputingDevice3D: React.FC<CyberComputingDevice3DProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab('QUANTUM')}
-                className={`px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] transition-all font-bold ${
+                className={`px-1.5 py-0.5 sm:px-2 sm:py-0.8 rounded text-[7px] sm:text-[8px] transition-all font-bold ${
                   activeTab === 'QUANTUM'
                     ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/50'
                     : 'hover:text-white'
