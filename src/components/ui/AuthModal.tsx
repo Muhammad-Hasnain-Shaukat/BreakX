@@ -27,58 +27,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   if (!isOpen) return null;
 
   // Authentic OAuth Identity Provider Login for Clients & Seekers
-  const handleOAuthLogin = async (provider: 'google' | 'github' | 'linkedin') => {
+  const handleOAuthLogin = (provider: 'google' | 'github' | 'linkedin') => {
     setLoading(true);
     setError('');
 
-    try {
-      let email = '';
-      let fullName = '';
-      let profilePicture = '';
-      let githubUsername = '';
-      let linkedinId = '';
-
-      if (provider === 'google') {
-        email = `${role.toLowerCase()}.google@breakx.agency`;
-        fullName = role === 'seeker' ? 'Verified Google Talent' : 'Verified Google Client';
-        profilePicture = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80';
-      } else if (provider === 'github') {
-        githubUsername = 'breakx-developer';
-        email = `${role.toLowerCase()}.github@breakx.agency`;
-        fullName = role === 'seeker' ? 'Senior GitHub Engineer' : 'GitHub Enterprise Partner';
-        profilePicture = 'https://avatars.githubusercontent.com/u/583231?v=4';
-      } else if (provider === 'linkedin') {
-        linkedinId = 'breakx-professional';
-        email = `${role.toLowerCase()}.linkedin@breakx.agency`;
-        fullName = role === 'seeker' ? 'LinkedIn AI Specialist' : 'LinkedIn Business Partner';
-        profilePicture = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80';
-      }
-
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          provider,
-          email,
-          fullName,
-          profilePicture,
-          role,
-          githubUsername,
-          linkedinId,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || `${provider} authentication failed`);
-
-      onClose();
-      const destination = targetRedirect || (role === 'seeker' ? '/join-breakx' : '/project-request');
-      window.location.href = destination;
-    } catch (err: any) {
-      setError(err.message || 'Authentication failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    const destination = targetRedirect || (role === 'seeker' ? '/join-breakx' : '/project-request');
+    window.location.href = `/api/auth/${provider}?role=${role}&redirect=${encodeURIComponent(destination)}`;
   };
 
   return (
