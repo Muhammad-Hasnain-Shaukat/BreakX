@@ -2,15 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Sparkles, FileText, CheckCircle2, Clock, ShieldAlert, Download, ExternalLink, PlusCircle, User, Briefcase, RefreshCw } from 'lucide-react';
+import { Sparkles, FileText, CheckCircle2, Clock, ShieldAlert, Download, ExternalLink, PlusCircle, User, Briefcase, RefreshCw, LogIn } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import { AuthModal } from '@/components/ui/AuthModal';
 
 export default function DashboardPage() {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [activeRole, setActiveRole] = useState<'client' | 'seeker'>('client');
   const [projectRequests, setProjectRequests] = useState<any[]>([]);
   const [seekerApplications, setSeekerApplications] = useState<any[]>([]);
+  const [authModalOpen, setAuthModalOpen] = useState<boolean>(false);
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
@@ -22,20 +23,17 @@ export default function DashboardPage() {
 
       if (meData.user) {
         setSession(meData.user);
-        setActiveRole(meData.user.role === 'seeker' ? 'seeker' : 'client');
+
+        if (meData.user.role === 'client') {
+          const pRes = await fetch('/api/project-requests');
+          const pData = await pRes.json();
+          if (pData.requests) setProjectRequests(pData.requests);
+        } else if (meData.user.role === 'seeker') {
+          const sRes = await fetch('/api/opportunity-seekers');
+          const sData = await sRes.json();
+          if (sData.seekers) setSeekerApplications(sData.seekers);
+        }
       }
-
-      // Fetch requests and applications
-      const [pRes, sRes] = await Promise.all([
-        fetch('/api/project-requests'),
-        fetch('/api/opportunity-seekers'),
-      ]);
-
-      const pData = await pRes.json();
-      const sData = await sRes.json();
-
-      if (pData.requests) setProjectRequests(pData.requests);
-      if (sData.seekers) setSeekerApplications(sData.seekers);
     } catch (err) {
       console.error('Fetch dashboard error:', err);
     } finally {
@@ -78,6 +76,42 @@ export default function DashboardPage() {
     return url.split('/').pop() || `Document_${index + 1}.pdf`;
   };
 
+  if (loading) {
+    return (
+      <div className="py-32 text-center space-y-4">
+        <div className="w-10 h-10 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className={`text-xs font-semibold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+          Loading your verified portal data...
+        </p>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="py-24 max-w-md mx-auto px-4 text-center space-y-6">
+        <div className="w-16 h-16 rounded-2xl bg-primary-500/10 border border-primary-500/30 text-primary-400 flex items-center justify-center mx-auto">
+          <LogIn className="w-8 h-8" />
+        </div>
+        <div className="space-y-2">
+          <h1 className={`font-display font-bold text-2xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            Authentication Required
+          </h1>
+          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+            Please sign in with your Google, GitHub, or LinkedIn account to access your personal dashboard.
+          </p>
+        </div>
+        <button
+          onClick={() => setAuthModalOpen(true)}
+          className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-primary-600 to-accent-cyan text-white font-bold text-xs shadow-neon-blue hover:scale-105 transition-transform"
+        >
+          Sign In to BreakX
+        </button>
+        <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      </div>
+    );
+  }
+
   return (
     <div className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
       {/* Header */}
@@ -89,13 +123,19 @@ export default function DashboardPage() {
         <div>
           <div
             className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full border text-xs font-semibold mb-2 ${
-              isDark
+              session.role === 'seeker'
+                ? isDark
+                  ? 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple'
+                  : 'bg-purple-50 border-purple-200 text-purple-700'
+                : isDark
                 ? 'bg-primary-500/10 border-primary-500/30 text-primary-400'
                 : 'bg-blue-50 border-blue-200 text-blue-700'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>USER PORTAL DASHBOARD</span>
+            <span className="uppercase tracking-wider">
+              {session.role === 'seeker' ? 'Talent Candidate Portal' : 'Client Partner Dashboard'}
+            </span>
           </div>
           <h1
             className={`font-display font-black text-3xl sm:text-4xl ${
@@ -103,51 +143,51 @@ export default function DashboardPage() {
             }`}
           >
             Welcome Back,{' '}
-            <span className={isDark ? 'text-primary-400' : 'text-blue-600'}>
-              {session?.fullName || 'BreakX Partner'}
+            <span
+              className={
+                session.role === 'seeker'
+                  ? isDark ? 'text-accent-purple' : 'text-purple-600'
+                  : isDark ? 'text-primary-400' : 'text-blue-600'
+              }
+            >
+              {session.fullName || session.email}
             </span>
           </h1>
-          <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-            Track your active proposals, project milestones, and candidate application states in real-time.
+          <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+            {session.role === 'seeker'
+              ? 'Track your job applications, profile reviews, and recruitment status in real-time.'
+              : 'Track your active project estimates, architecture proposals, and delivery milestones.'}
           </p>
         </div>
 
-        {/* View Role Switcher */}
-        <div
-          className={`flex items-center space-x-2 p-1.5 rounded-2xl border ${
-            isDark ? 'bg-surface-card border-surface-border' : 'bg-slate-100 border-slate-200 shadow-sm'
-          }`}
-        >
-          <button
-            onClick={() => setActiveRole('client')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 transition-all ${
-              activeRole === 'client'
-                ? 'bg-primary-600 text-white shadow-neon-blue'
-                : isDark
-                ? 'text-slate-400 hover:text-white'
-                : 'text-slate-600 hover:text-slate-900'
+        {/* User Identity Info */}
+        <div className="flex items-center space-x-3">
+          <div
+            className={`flex items-center space-x-3 px-4 py-2.5 rounded-2xl border ${
+              isDark ? 'bg-surface-card border-surface-border' : 'bg-slate-50 border-slate-200 shadow-sm'
             }`}
           >
-            <Briefcase className="w-3.5 h-3.5" />
-            <span>Client View</span>
-          </button>
-          <button
-            onClick={() => setActiveRole('seeker')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 transition-all ${
-              activeRole === 'seeker'
-                ? 'bg-accent-purple text-white shadow-neon-purple'
-                : isDark
-                ? 'text-slate-400 hover:text-white'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <User className="w-3.5 h-3.5" />
-            <span>Talent Seeker View</span>
-          </button>
-          {session?.role === 'admin' && (
+            {session.profilePicture && (
+              <img
+                src={session.profilePicture}
+                alt={session.fullName}
+                className="w-8 h-8 rounded-full object-cover border border-primary-400"
+              />
+            )}
+            <div className="text-left">
+              <div className={`text-xs font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                {session.fullName}
+              </div>
+              <div className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                {session.email}
+              </div>
+            </div>
+          </div>
+
+          {session.role === 'admin' && (
             <Link
               href="/admin"
-              className="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500/20 border border-amber-500/40 text-amber-600 hover:bg-amber-500/30"
+              className="px-4 py-2.5 rounded-2xl text-xs font-bold bg-amber-500/20 border border-amber-500/40 text-amber-600 hover:bg-amber-500/30"
             >
               Admin Portal →
             </Link>
@@ -155,17 +195,13 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {loading ? (
-        <div className="py-24 text-center space-y-3">
-          <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Loading your real-time portal data...</p>
-        </div>
-      ) : activeRole === 'client' ? (
-        /* Client Requests Dashboard View */
+      {/* Role-Specific View */}
+      {session.role === 'client' ? (
+        /* Client Requests Dashboard View (Strictly for Clients) */
         <div className="space-y-8">
           <div className="flex items-center justify-between">
             <h2 className={`font-display font-bold text-xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              Your Project Proposals & Requests
+              Your Project Proposals & Requests ({projectRequests.length})
             </h2>
             <Link
               href="/project-request"
@@ -182,12 +218,14 @@ export default function DashboardPage() {
                 isDark ? 'border-surface-border' : 'border-slate-200 bg-white shadow-md'
               }`}
             >
-              <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>No project requests found for your account.</p>
+              <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                No project requests submitted under {session.email} yet.
+              </p>
               <Link
                 href="/project-request"
                 className="inline-block px-6 py-3 rounded-xl bg-primary-600 text-white font-bold text-xs shadow-neon-blue"
               >
-                Submit First Request
+                Submit First Project Request
               </Link>
             </div>
           ) : (
@@ -274,18 +312,18 @@ export default function DashboardPage() {
           )}
         </div>
       ) : (
-        /* Seeker Candidate Dashboard View */
+        /* Seeker Candidate Dashboard View (Strictly for Talent Seekers) */
         <div className="space-y-8">
           <div className="flex items-center justify-between">
             <h2 className={`font-display font-bold text-xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              Your Candidate Applications
+              Your Job Applications ({seekerApplications.length})
             </h2>
             <Link
               href="/join-breakx"
               className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-accent-purple hover:bg-accent-purple/80 text-white text-xs font-bold shadow-neon-purple transition-all"
             >
               <PlusCircle className="w-4 h-4" />
-              <span>Apply for New Role</span>
+              <span>Submit Another Application</span>
             </Link>
           </div>
 
@@ -295,7 +333,9 @@ export default function DashboardPage() {
                 isDark ? 'border-surface-border' : 'border-slate-200 bg-white shadow-md'
               }`}
             >
-              <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>No applications found for your account.</p>
+              <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                No candidate applications found under {session.email}.
+              </p>
               <Link
                 href="/join-breakx"
                 className="inline-block px-6 py-3 rounded-xl bg-accent-purple text-white font-bold text-xs shadow-neon-purple"
@@ -351,7 +391,7 @@ export default function DashboardPage() {
                           }`}
                         >
                           <Download className="w-4 h-4" />
-                          <span>Download Saved Resume</span>
+                          <span>Download Submitted Resume</span>
                         </a>
                       )}
                     </div>

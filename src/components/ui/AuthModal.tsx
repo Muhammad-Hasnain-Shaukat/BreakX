@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, LogIn, UserCheck, ArrowRight, Github, Linkedin } from 'lucide-react';
+import { X, Sparkles, LogIn, UserCheck, ArrowRight, Github, Linkedin, AlertCircle } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
 interface AuthModalProps {
@@ -12,17 +13,26 @@ interface AuthModalProps {
   targetRedirect?: string;
 }
 
-export const AuthModal: React.FC<AuthModalProps> = ({
+function AuthModalContent({
   isOpen,
   onClose,
   initialRole = 'client',
   targetRedirect,
-}) => {
+}: AuthModalProps) {
+  const searchParams = useSearchParams();
+  const authErrorParam = searchParams.get('auth_error');
+
   const [role, setRole] = useState<'client' | 'seeker'>(initialRole === 'seeker' ? 'seeker' : 'client');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+
+  useEffect(() => {
+    if (authErrorParam) {
+      setError(decodeURIComponent(authErrorParam));
+    }
+  }, [authErrorParam]);
 
   if (!isOpen) return null;
 
@@ -138,8 +148,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           </div>
 
           {error && (
-            <div className="mt-4 p-3.5 rounded-2xl bg-red-500/15 border border-red-500/40 text-red-500 text-xs font-semibold">
-              {error}
+            <div className="mt-4 p-3.5 rounded-2xl bg-red-500/15 border border-red-500/40 text-red-400 text-xs font-semibold flex items-start space-x-2">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{error}</span>
             </div>
           )}
 
@@ -231,11 +242,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             }`}
           >
             <p className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              Authenticated user profiles and scopes are securely stored in BreakX Database.
+              Real OAuth 2.0 provider tokens are verified on Google, GitHub, and LinkedIn servers.
             </p>
           </div>
         </motion.div>
       </div>
     </AnimatePresence>
+  );
+}
+
+export const AuthModal: React.FC<AuthModalProps> = (props) => {
+  return (
+    <Suspense fallback={null}>
+      <AuthModalContent {...props} />
+    </Suspense>
   );
 };
