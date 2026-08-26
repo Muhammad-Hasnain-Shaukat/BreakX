@@ -7,16 +7,16 @@ export interface OAuthProfile {
 }
 
 export function getBaseUrl(req?: Request): string {
+  if (req) {
+    const host = req.headers.get('x-forwarded-host') || req.headers.get('host');
+    const proto = req.headers.get('x-forwarded-proto') || (host && host.includes('localhost') ? 'http' : 'https');
+    if (host) return `${proto}://${host}`;
+  }
   if (process.env.NEXT_PUBLIC_APP_URL) {
     return process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '');
   }
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
-  }
-  if (req) {
-    const host = req.headers.get('host');
-    const proto = req.headers.get('x-forwarded-proto') || 'http';
-    if (host) return `${proto}://${host}`;
   }
   return 'http://localhost:3000';
 }
