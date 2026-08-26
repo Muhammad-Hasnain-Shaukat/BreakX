@@ -71,23 +71,32 @@ export const HeroSection: React.FC = () => {
             </span>
           </div>
 
-          {/* Main Headline */}
-          <h1
-            className={`font-display font-black text-4xl sm:text-5xl tracking-tight leading-[1.0] ${
-              isDark ? 'text-white' : 'text-slate-900'
-            }`}
-          >
-            BREAK <br />
-            <span
-              className={`text-transparent bg-clip-text ${
-                isDark
-                  ? 'bg-gradient-to-r from-[#00F0FF] via-[#60A5FA] to-[#C084FC] drop-shadow-[0_0_30px_rgba(0,240,255,0.7)]'
-                  : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 drop-shadow-[0_2px_15px_rgba(37,99,235,0.25)]'
+          {/* Main Headline with 3D BX Logo Behind BREAK */}
+          <div className="relative">
+            <div className="absolute -top-10 -left-6 sm:-top-14 sm:-left-10 w-44 sm:w-56 h-44 sm:h-56 -z-10 pointer-events-none opacity-40 sm:opacity-50 filter drop-shadow-[0_0_30px_rgba(0,240,255,0.4)] select-none">
+              <img
+                src="/breakx-bx-logo.png"
+                alt="BreakX Logo"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <h1
+              className={`font-display font-black text-4xl sm:text-5xl tracking-tight leading-[1.0] relative z-10 ${
+                isDark ? 'text-white' : 'text-slate-900'
               }`}
             >
-              THE ORDINARY.
-            </span>
-          </h1>
+              BREAK <br />
+              <span
+                className={`text-transparent bg-clip-text ${
+                  isDark
+                    ? 'bg-gradient-to-r from-[#00F0FF] via-[#60A5FA] to-[#C084FC] drop-shadow-[0_0_30px_rgba(0,240,255,0.7)]'
+                    : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 drop-shadow-[0_2px_15px_rgba(37,99,235,0.25)]'
+                }`}
+              >
+                THE ORDINARY.
+              </span>
+            </h1>
+          </div>
 
           {/* Subtitle */}
           <p
@@ -270,28 +279,37 @@ export const HeroSection: React.FC = () => {
                 </span>
               </div>
 
-              {/* Main Headline */}
-              <h1 className="font-display font-black text-6xl lg:text-7xl tracking-tight leading-[0.95]">
-                <span
-                  className={
-                    isDark
-                      ? 'text-white drop-shadow-[0_4px_24px_rgba(0,0,0,1)]'
-                      : 'text-slate-900 drop-shadow-[0_2px_15px_rgba(0,0,0,0.08)]'
-                  }
-                >
-                  BREAK
-                </span>{' '}
-                <br />
-                <span
-                  className={`text-transparent bg-clip-text ${
-                    isDark
-                      ? 'bg-gradient-to-r from-[#60A5FA] via-[#818CF8] to-[#38BDF8] drop-shadow-[0_0_40px_rgba(96,165,250,0.8)]'
-                      : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600 drop-shadow-[0_2px_20px_rgba(37,99,235,0.2)]'
-                  }`}
-                >
-                  THE ORDINARY.
-                </span>
-              </h1>
+              {/* Main Headline with 3D BX Logo Behind BREAK */}
+              <div className="relative">
+                <div className="absolute -top-14 -left-12 lg:-top-20 lg:-left-16 w-60 lg:w-80 h-60 lg:h-80 -z-10 pointer-events-none opacity-40 lg:opacity-50 filter drop-shadow-[0_0_40px_rgba(0,240,255,0.45)] select-none">
+                  <img
+                    src="/breakx-bx-logo.png"
+                    alt="BreakX Logo"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <h1 className="font-display font-black text-6xl lg:text-7xl tracking-tight leading-[0.95] relative z-10">
+                  <span
+                    className={
+                      isDark
+                        ? 'text-white drop-shadow-[0_4px_24px_rgba(0,0,0,1)]'
+                        : 'text-slate-900 drop-shadow-[0_2px_15px_rgba(0,0,0,0.08)]'
+                    }
+                  >
+                    BREAK
+                  </span>{' '}
+                  <br />
+                  <span
+                    className={`text-transparent bg-clip-text ${
+                      isDark
+                        ? 'bg-gradient-to-r from-[#60A5FA] via-[#818CF8] to-[#38BDF8] drop-shadow-[0_0_40px_rgba(96,165,250,0.8)]'
+                        : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600 drop-shadow-[0_2px_20px_rgba(37,99,235,0.2)]'
+                    }`}
+                  >
+                    THE ORDINARY.
+                  </span>
+                </h1>
+              </div>
 
               {/* Subtitle */}
               <p

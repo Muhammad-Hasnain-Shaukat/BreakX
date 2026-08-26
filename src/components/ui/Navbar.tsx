@@ -82,21 +82,17 @@ export const Navbar: React.FC = () => {
             >
               {/* Logo */}
               <Link href="/" className="flex items-center space-x-3 group/logo">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#00F0FF] via-blue-500 to-purple-500 p-[1.5px] shadow-[0_0_20px_rgba(0,240,255,0.6)] group-hover/logo:scale-105 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#00F0FF] via-blue-500 to-purple-500 p-[1.5px] shadow-[0_0_20px_rgba(0,240,255,0.6)] group-hover/logo:scale-105 transition-transform overflow-hidden">
                   <div
-                    className={`w-full h-full rounded-[10px] flex items-center justify-center transition-colors ${
+                    className={`w-full h-full rounded-[10px] flex items-center justify-center overflow-hidden p-0.5 transition-colors ${
                       isDark ? 'bg-[#030712]' : 'bg-white'
                     }`}
                   >
-                    <span
-                      className={`font-display font-black text-lg text-transparent bg-clip-text ${
-                        isDark
-                          ? 'bg-gradient-to-r from-[#00F0FF] via-white to-purple-300'
-                          : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600'
-                      }`}
-                    >
-                      X
-                    </span>
+                    <img
+                      src="/breakx-bx-logo.png"
+                      alt="BreakX Logo"
+                      className="w-full h-full object-contain"
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col">
