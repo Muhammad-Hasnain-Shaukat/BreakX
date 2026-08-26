@@ -68,6 +68,16 @@ export default function DashboardPage() {
     }
   };
 
+  const getFileName = (url: string, index: number) => {
+    if (!url) return `Document_${index + 1}.pdf`;
+    if (url.startsWith('data:')) {
+      const match = url.match(/name=([^;]+)/);
+      if (match && match[1]) return decodeURIComponent(match[1]);
+      return `Document_${index + 1}.pdf`;
+    }
+    return url.split('/').pop() || `Document_${index + 1}.pdf`;
+  };
+
   return (
     <div className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
       {/* Header */}
@@ -231,25 +241,29 @@ export default function DashboardPage() {
                     {files.length > 0 && (
                       <div className="pt-2">
                         <span className={`text-xs font-semibold block mb-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                          Attached Documents:
+                          Attached Documents ({files.length}):
                         </span>
                         <div className="flex flex-wrap gap-2">
-                          {files.map((fileUrl: string, idx: number) => (
-                            <a
-                              key={idx}
-                              href={fileUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className={`px-3 py-1.5 rounded-lg border text-xs flex items-center space-x-1 transition-colors ${
-                                isDark
-                                  ? 'bg-surface border-surface-border text-primary-400 hover:text-white'
-                                  : 'bg-slate-50 border-slate-200 text-blue-600 hover:text-blue-800'
-                              }`}
-                            >
-                              <FileText className="w-3.5 h-3.5" />
-                              <span className="truncate max-w-[180px]">{fileUrl.split('/').pop()}</span>
-                            </a>
-                          ))}
+                          {files.map((fileUrl: string, idx: number) => {
+                            const fileName = getFileName(fileUrl, idx);
+                            return (
+                              <a
+                                key={idx}
+                                href={fileUrl}
+                                download={fileName}
+                                target="_blank"
+                                rel="noreferrer"
+                                className={`px-3 py-1.5 rounded-lg border text-xs flex items-center space-x-1.5 transition-colors ${
+                                  isDark
+                                    ? 'bg-surface border-surface-border text-primary-400 hover:text-white hover:border-primary-500'
+                                    : 'bg-slate-50 border-slate-200 text-blue-600 hover:text-blue-800 hover:border-blue-400 shadow-sm'
+                                }`}
+                              >
+                                <Download className="w-3.5 h-3.5 shrink-0" />
+                                <span className="truncate max-w-[200px]">{fileName}</span>
+                              </a>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
@@ -291,59 +305,63 @@ export default function DashboardPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6">
-              {seekerApplications.map((app) => (
-                <div
-                  key={app.id}
-                  className={`glass-card p-6 sm:p-8 rounded-3xl border space-y-4 transition-colors ${
-                    isDark ? 'border-surface-border' : 'border-slate-200 bg-white/90 shadow-md'
-                  }`}
-                >
+              {seekerApplications.map((app) => {
+                const resumeFileName = getFileName(app.resumeFile, 0);
+                return (
                   <div
-                    className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b ${
-                      isDark ? 'border-surface-border' : 'border-slate-200'
+                    key={app.id}
+                    className={`glass-card p-6 sm:p-8 rounded-3xl border space-y-4 transition-colors ${
+                      isDark ? 'border-surface-border' : 'border-slate-200 bg-white/90 shadow-md'
                     }`}
                   >
-                    <div>
-                      <div className="flex items-center space-x-3">
-                        <h3 className={`font-display font-bold text-xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                          {app.role}
-                        </h3>
-                        <span
-                          className={`px-3 py-1 rounded-full border text-xs font-bold ${getStatusBadge(
-                            app.status
-                          )}`}
-                        >
-                          ● {app.status}
-                        </span>
+                    <div
+                      className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b ${
+                        isDark ? 'border-surface-border' : 'border-slate-200'
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center space-x-3">
+                          <h3 className={`font-display font-bold text-xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                            {app.role}
+                          </h3>
+                          <span
+                            className={`px-3 py-1 rounded-full border text-xs font-bold ${getStatusBadge(
+                              app.status
+                            )}`}
+                          >
+                            ● {app.status}
+                          </span>
+                        </div>
+                        <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                          Experience: {app.experience} • Applied:{' '}
+                          {new Date(app.createdAt).toLocaleDateString()}
+                        </p>
                       </div>
-                      <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                        Experience: {app.experience} • Applied:{' '}
-                        {new Date(app.createdAt).toLocaleDateString()}
-                      </p>
+
+                      {app.resumeFile && (
+                        <a
+                          href={app.resumeFile}
+                          download={resumeFileName}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={`px-4 py-2 rounded-xl border text-xs font-semibold flex items-center space-x-2 transition-colors ${
+                            isDark
+                              ? 'bg-surface border-surface-border text-primary-400 hover:text-white hover:border-primary-500'
+                              : 'bg-slate-50 border-slate-200 text-blue-600 hover:text-blue-800 hover:border-blue-400 shadow-sm'
+                          }`}
+                        >
+                          <Download className="w-4 h-4" />
+                          <span>Download Saved Resume</span>
+                        </a>
+                      )}
                     </div>
 
-                    {app.resumeFile && (
-                      <a
-                        href={app.resumeFile}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={`px-4 py-2 rounded-xl border text-xs font-semibold flex items-center space-x-2 transition-colors ${
-                          isDark
-                            ? 'bg-surface border-surface-border text-primary-400 hover:text-white'
-                            : 'bg-slate-50 border-slate-200 text-blue-600 hover:text-blue-800'
-                        }`}
-                      >
-                        <Download className="w-4 h-4" />
-                        <span>Preview Uploaded Resume</span>
-                      </a>
-                    )}
+                    <p className={`text-xs sm:text-sm italic ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                      "{app.introduction}"
+                    </p>
                   </div>
-
-                  <p className={`text-xs sm:text-sm italic ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                    "{app.introduction}"
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

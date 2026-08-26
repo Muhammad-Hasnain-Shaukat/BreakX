@@ -30,6 +30,16 @@ export default function AdminPortalPage() {
   const [authError, setAuthError] = useState<string>('');
   const [authLoading, setAuthLoading] = useState<boolean>(false);
 
+  const getFileName = (url: string, defaultName: string) => {
+    if (!url) return defaultName;
+    if (url.startsWith('data:')) {
+      const match = url.match(/name=([^;]+)/);
+      if (match && match[1]) return decodeURIComponent(match[1]);
+      return `${defaultName}.pdf`;
+    }
+    return url.split('/').pop() || `${defaultName}.pdf`;
+  };
+
   const fetchAdminData = async () => {
     setLoading(true);
     try {
@@ -598,6 +608,7 @@ export default function AdminPortalPage() {
                       {s.resumeFile && (
                         <a
                           href={s.resumeFile}
+                          download={getFileName(s.resumeFile, `${s.name.replace(/\s+/g, '_')}_Resume`)}
                           target="_blank"
                           rel="noreferrer"
                           className={`text-xs font-semibold flex items-center space-x-1 ${
@@ -676,6 +687,47 @@ export default function AdminPortalPage() {
                 <span className={`font-bold ${isDark ? 'text-slate-400' : 'text-slate-900'}`}>Description:</span>{' '}
                 {selectedProject.projectDescription}
               </div>
+
+              {/* Attached Project Files */}
+              {selectedProject.attachedFiles && (
+                <div>
+                  <span className={`font-bold block mb-1.5 ${isDark ? 'text-slate-400' : 'text-slate-900'}`}>
+                    Attached Documents:
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {(() => {
+                      try {
+                        const parsed = JSON.parse(selectedProject.attachedFiles);
+                        if (!Array.isArray(parsed) || parsed.length === 0) {
+                          return <span className="text-slate-500 italic">None attached</span>;
+                        }
+                        return parsed.map((fileUrl: string, idx: number) => {
+                          const fileName = getFileName(fileUrl, `Document_${idx + 1}`);
+                          return (
+                            <a
+                              key={idx}
+                              href={fileUrl}
+                              download={fileName}
+                              target="_blank"
+                              rel="noreferrer"
+                              className={`px-3 py-1.5 rounded-lg border text-xs flex items-center space-x-1.5 transition-colors ${
+                                isDark
+                                  ? 'bg-surface border-surface-border text-primary-400 hover:text-white hover:border-primary-500'
+                                  : 'bg-slate-50 border-slate-200 text-blue-600 hover:text-blue-800 hover:border-blue-400 shadow-sm'
+                              }`}
+                            >
+                              <Download className="w-3.5 h-3.5 shrink-0" />
+                              <span className="truncate max-w-[180px]">{fileName}</span>
+                            </a>
+                          );
+                        });
+                      } catch {
+                        return <span className="text-slate-500 italic">None attached</span>;
+                      }
+                    })()}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>
@@ -782,6 +834,29 @@ export default function AdminPortalPage() {
                 <span className={`font-bold ${isDark ? 'text-slate-400' : 'text-slate-900'}`}>Intro:</span>{' '}
                 {selectedSeeker.introduction}
               </div>
+
+              {/* Resume Download Action */}
+              {selectedSeeker.resumeFile && (
+                <div>
+                  <span className={`font-bold block mb-1.5 ${isDark ? 'text-slate-400' : 'text-slate-900'}`}>
+                    Resume Document:
+                  </span>
+                  <a
+                    href={selectedSeeker.resumeFile}
+                    download={getFileName(selectedSeeker.resumeFile, `${selectedSeeker.name.replace(/\s+/g, '_')}_Resume`)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`inline-flex items-center space-x-2 px-4 py-2 rounded-xl border text-xs font-bold transition-all ${
+                      isDark
+                        ? 'bg-accent-purple/15 border-accent-purple/40 text-accent-purple hover:bg-accent-purple/25'
+                        : 'bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100 shadow-sm'
+                    }`}
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Download {selectedSeeker.name}'s Resume</span>
+                  </a>
+                </div>
+              )}
             </div>
 
             <div>

@@ -20,6 +20,7 @@ export default function JoinBreakXPage() {
   const [linkedinUrl, setLinkedinUrl] = useState<string>('');
   const [introduction, setIntroduction] = useState<string>('');
   const [resumeFile, setResumeFile] = useState<string>('');
+  const [resumeFileName, setResumeFileName] = useState<string>('');
 
   const [uploading, setUploading] = useState<boolean>(false);
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -58,6 +59,7 @@ export default function JoinBreakXPage() {
       if (!res.ok) throw new Error(data.error || 'Resume upload failed');
 
       setResumeFile(data.urls[0]);
+      setResumeFileName(files[0].name);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -365,7 +367,7 @@ export default function JoinBreakXPage() {
                     {resumeFile ? 'Click to replace resume' : 'Upload Resume File'}
                   </span>
                   <span className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                    PDF, DOC, DOCX (Max 20MB)
+                    PDF, DOC, DOCX (Max 10MB)
                   </span>
                 </label>
               </div>
@@ -378,7 +380,9 @@ export default function JoinBreakXPage() {
                 >
                   <div className="flex items-center space-x-2">
                     <FileCheck className="w-4 h-4" />
-                    <span>Resume attached: {resumeFile.split('/').pop()}</span>
+                    <span>
+                      Resume attached: {resumeFileName || 'resume.pdf'} (Saved in Database)
+                    </span>
                   </div>
                 </div>
               )}

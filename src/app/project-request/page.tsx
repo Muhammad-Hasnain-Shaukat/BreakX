@@ -5,6 +5,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Sparkles, Upload, FileText, CheckCircle2, ArrowRight, X, AlertCircle } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
+interface UploadedFileItem {
+  name: string;
+  url: string;
+}
+
 function ProjectRequestForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -19,7 +24,7 @@ function ProjectRequestForm() {
   const [projectBudget, setProjectBudget] = useState<string>('$25,000 - $50,000');
   const [projectDeadline, setProjectDeadline] = useState<string>('4 - 6 Weeks');
   const [projectDescription, setProjectDescription] = useState<string>('');
-  const [attachedFiles, setAttachedFiles] = useState<string[]>([]);
+  const [attachedFiles, setAttachedFiles] = useState<UploadedFileItem[]>([]);
 
   const [uploading, setUploading] = useState<boolean>(false);
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -59,7 +64,15 @@ function ProjectRequestForm() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Upload failed');
 
-      setAttachedFiles((prev) => [...prev, ...data.urls]);
+      const newItems: UploadedFileItem[] = [];
+      for (let i = 0; i < data.urls.length; i++) {
+        newItems.push({
+          name: files[i]?.name || `Document_${i + 1}.pdf`,
+          url: data.urls[i],
+        });
+      }
+
+      setAttachedFiles((prev) => [...prev, ...newItems]);
     } catch (err: any) {
       setError(err.message || 'File upload failed');
     } finally {
@@ -77,6 +90,7 @@ function ProjectRequestForm() {
     setError('');
 
     try {
+      const rawUrls = attachedFiles.map((f) => f.url);
       const res = await fetch('/api/project-requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -88,7 +102,7 @@ function ProjectRequestForm() {
           projectBudget,
           projectDeadline,
           projectDescription,
-          attachedFiles,
+          attachedFiles: rawUrls,
         }),
       });
 
@@ -339,7 +353,7 @@ function ProjectRequestForm() {
                     Click to upload documents or take photo
                   </span>
                   <span className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                    Supports PDF, DOCX, PNG, JPG, JSON (Max 50MB)
+                    Supports PDF, DOCX, PNG, JPG, JSON (Max 10MB per file)
                   </span>
                 </label>
               </div>
@@ -347,7 +361,7 @@ function ProjectRequestForm() {
               {/* Uploaded File List */}
               {attachedFiles.length > 0 && (
                 <div className="mt-4 space-y-2">
-                  {attachedFiles.map((url, i) => (
+                  {attachedFiles.map((fileItem, i) => (
                     <div
                       key={i}
                       className={`flex items-center justify-between p-3 rounded-xl border text-xs ${
@@ -358,7 +372,7 @@ function ProjectRequestForm() {
                     >
                       <div className="flex items-center space-x-2 truncate">
                         <FileText className={`w-4 h-4 shrink-0 ${isDark ? 'text-primary-400' : 'text-blue-600'}`} />
-                        <span className="truncate">{url.split('/').pop()}</span>
+                        <span className="truncate">{fileItem.name}</span>
                       </div>
                       <button
                         type="button"
