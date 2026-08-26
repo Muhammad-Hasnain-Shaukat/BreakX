@@ -7,18 +7,22 @@ export interface OAuthProfile {
 }
 
 export function getBaseUrl(req?: Request): string {
+  // 1. If running locally on localhost (dev environment)
   if (req) {
     const host = req.headers.get('x-forwarded-host') || req.headers.get('host');
-    const proto = req.headers.get('x-forwarded-proto') || (host && host.includes('localhost') ? 'http' : 'https');
-    if (host) return `${proto}://${host}`;
+    if (host && host.includes('localhost')) {
+      const proto = req.headers.get('x-forwarded-proto') || 'http';
+      return `${proto}://${host}`;
+    }
   }
-  if (process.env.NEXT_PUBLIC_APP_URL) {
+
+  // 2. Canonical production domain from environment
+  if (process.env.NEXT_PUBLIC_APP_URL && !process.env.NEXT_PUBLIC_APP_URL.includes('localhost')) {
     return process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '');
   }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  return 'http://localhost:3000';
+
+  // 3. Default permanent production domain for BreakX on Vercel
+  return 'https://break-x.vercel.app';
 }
 
 // 1. Google OAuth 2.0
