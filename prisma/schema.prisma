@@ -1,0 +1,62 @@
+// Prisma Schema for BreakX
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  fullName       String
+  profilePicture String?
+  provider       String   @default("google") // 'google' | 'github' | 'linkedin'
+  providerId     String?
+  role           String   @default("client") // 'client' | 'seeker' | 'admin'
+  githubUrl      String?
+  linkedinUrl    String?
+  createdAt      DateTime @default(now())
+
+  projectRequests   ProjectRequest[]
+  opportunitySeeker OpportunitySeeker[]
+}
+
+model ProjectRequest {
+  id                 String   @id @default(uuid())
+  userId             String?
+  user               User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name               String
+  email              String
+  companyName        String?
+  serviceRequired    String   // 'Website Development' | 'AI Solution' | 'Automation' | 'UI/UX' | 'Other'
+  projectBudget      String
+  projectDeadline    String
+  projectDescription String
+  attachedFiles      String   @default("[]") // JSON String array of file URLs
+  status             String   @default("Pending") // 'Pending' | 'Reviewing' | 'Approved' | 'Rejected' | 'Completed'
+  internalNotes      String?
+  createdAt          DateTime @default(now())
+}
+
+model OpportunitySeeker {
+  id            String   @id @default(uuid())
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name          String
+  email         String
+  phone         String
+  role          String
+  experience    String
+  portfolioUrl  String?
+  githubUrl     String?
+  linkedinUrl   String?
+  introduction  String
+  resumeFile    String
+  status        String   @default("New") // 'New' | 'Reviewed' | 'Shortlisted' | 'Rejected' | 'Selected'
+  internalNotes String?
+  createdAt     DateTime @default(now())
+}

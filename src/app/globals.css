@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 3 7 18;
+    --foreground: 248 250 252;
+  }
+
+  body {
+    background-color: #030712;
+    color: #F8FAFC;
+    font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom Smooth Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030712;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1E293B;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3B82F6;
+}
+
+/* Mobile Ultra-Contrast System: Bold Black with Crisp White Halo Outline */
+.mobile-bold-black {
+  color: #000000;
+  font-weight: 900;
+  text-shadow: 
+    -1.5px -1.5px 0 #FFFFFF,
+     1.5px -1.5px 0 #FFFFFF,
+    -1.5px  1.5px 0 #FFFFFF,
+     1.5px  1.5px 0 #FFFFFF,
+     0 0 12px rgba(255, 255, 255, 0.95),
+     0 0 24px rgba(0, 240, 255, 0.8);
+}
+
+.mobile-bold-body {
+  color: #000000;
+  font-weight: 800;
+  text-shadow: 
+    -1px -1px 0 #FFFFFF,
+     1px -1px 0 #FFFFFF,
+    -1px  1px 0 #FFFFFF,
+     1px  1px 0 #FFFFFF,
+     0 0 8px rgba(255, 255, 255, 0.9);
+}
+
+/* HDR High-Contrast Text Stroke & Shadows for PC */
+.hdr-text-shadow {
+  text-shadow: 
+    -1px -1px 0 rgba(0, 0, 0, 0.9),  
+     1px -1px 0 rgba(0, 0, 0, 0.9),
+    -1px  1px 0 rgba(0, 0, 0, 0.9),
+     1px  1px 0 rgba(0, 0, 0, 0.9),
+     0 3px 18px rgba(0, 0, 0, 1),
+     0 0 32px rgba(0, 0, 0, 0.95);
+}
+
+.hdr-body-shadow {
+  text-shadow: 
+    -0.5px -0.5px 0 rgba(0, 0, 0, 0.9),  
+     0.5px -0.5px 0 rgba(0, 0, 0, 0.9),
+    -0.5px  0.5px 0 rgba(0, 0, 0, 0.9),
+     0.5px  0.5px 0 rgba(0, 0, 0, 0.9),
+     0 2px 12px rgba(0, 0, 0, 0.95);
+}
+
+/* Neon Column & Card Glow System */
+.neon-column {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(13, 17, 28, 0.7) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.35), inset 0 0 15px -3px rgba(139, 92, 246, 0.2);
+  transition: all 0.3s ease;
+}
+
+.neon-column:hover {
+  border-color: rgba(0, 240, 255, 0.7);
+  box-shadow: 0 0 35px -3px rgba(0, 240, 255, 0.5), inset 0 0 20px -2px rgba(139, 92, 246, 0.35);
+  transform: translateY(-3px);
+}
+
+/* Radiant Electric Neon Light Border on Round Pills */
+.neon-pill {
+  border: 2px solid #00F0FF;
+  box-shadow: 0 0 15px #00F0FF, 0 0 30px rgba(0, 240, 255, 0.45), inset 0 0 10px rgba(0, 240, 255, 0.25);
+}
+
+.neon-pill-purple {
+  border: 2px solid #C084FC;
+  box-shadow: 0 0 15px #C084FC, 0 0 30px rgba(192, 132, 252, 0.45), inset 0 0 10px rgba(192, 132, 252, 0.25);
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 20px -5px rgba(59, 130, 246, 0.25);
+}
+
+.glass-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hover:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 0 35px -3px rgba(59, 130, 246, 0.45);
+  transform: translateY(-4px);
+}
