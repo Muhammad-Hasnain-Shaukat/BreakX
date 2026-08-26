@@ -3,9 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Sparkles, Upload, FileCheck, CheckCircle2, ArrowRight, AlertCircle } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function JoinBreakXPage() {
   const router = useRouter();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -108,34 +111,59 @@ export default function JoinBreakXPage() {
     <div className="py-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
       {/* Header */}
       <div className="text-center space-y-4">
-        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-accent-purple/10 border border-accent-purple/30 text-accent-purple text-xs font-semibold">
+        <div
+          className={`inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border text-xs font-semibold ${
+            isDark
+              ? 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple'
+              : 'bg-purple-50 border-purple-200 text-purple-700'
+          }`}
+        >
           <Sparkles className="w-3.5 h-3.5" />
           <span>JOIN THE BREAKX TEAM</span>
         </div>
-        <h1 className="font-display font-black text-4xl sm:text-5xl text-white tracking-tight">
-          Craft the Future of <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-purple to-accent-cyan">Digital Motion.</span>
+        <h1
+          className={`font-display font-black text-4xl sm:text-5xl tracking-tight ${
+            isDark ? 'text-white' : 'text-slate-900'
+          }`}
+        >
+          Craft the Future of{' '}
+          <span
+            className={`text-transparent bg-clip-text ${
+              isDark
+                ? 'bg-gradient-to-r from-accent-purple to-accent-cyan'
+                : 'bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600'
+            }`}
+          >
+            Digital Motion.
+          </span>
         </h1>
-        <p className="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
+        <p className={`text-sm sm:text-base max-w-xl mx-auto ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
           We are seeking world-class creative engineers, AI architects, and motion designers. Submit your profile below.
         </p>
       </div>
 
       {/* Form Card */}
-      <div className="glass-card p-8 sm:p-12 rounded-3xl border border-surface-border relative overflow-hidden">
+      <div
+        className={`glass-card p-8 sm:p-12 rounded-3xl border relative overflow-hidden transition-colors ${
+          isDark ? 'border-surface-border' : 'border-slate-200 shadow-xl bg-white/90'
+        }`}
+      >
         {success ? (
           <div className="py-16 text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500 text-emerald-400 flex items-center justify-center mx-auto animate-bounce">
+            <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500 text-emerald-500 flex items-center justify-center mx-auto animate-bounce">
               <CheckCircle2 className="w-8 h-8" />
             </div>
-            <h2 className="font-display font-bold text-2xl text-white">Application Received!</h2>
-            <p className="text-slate-400 text-xs sm:text-sm">
+            <h2 className={`font-display font-bold text-2xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              Application Received!
+            </h2>
+            <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
               Redirecting to your Talent Dashboard...
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium flex items-center space-x-2">
+              <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-medium flex items-center space-x-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{error}</span>
               </div>
@@ -143,47 +171,71 @@ export default function JoinBreakXPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="text-xs text-slate-300 font-semibold mb-2 block">Full Name *</label>
+                <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                  Full Name *
+                </label>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Alex Rivera"
-                  className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 />
               </div>
 
               <div>
-                <label className="text-xs text-slate-300 font-semibold mb-2 block">Email Address *</label>
+                <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                  Email Address *
+                </label>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="alex@dev.io"
-                  className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 />
               </div>
 
               <div>
-                <label className="text-xs text-slate-300 font-semibold mb-2 block">Phone Number *</label>
+                <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                  Phone Number *
+                </label>
                 <input
                   type="tel"
                   required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+1 (555) 000-0000"
-                  className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 />
               </div>
 
               <div>
-                <label className="text-xs text-slate-300 font-semibold mb-2 block">Target Role *</label>
+                <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                  Target Role *
+                </label>
                 <select
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 >
                   <option value="Senior WebGL & Creative Frontend Architect">Senior WebGL & Creative Frontend Architect</option>
                   <option value="Lead AI / LLM Pipeline Engineer">Lead AI / LLM Pipeline Engineer</option>
@@ -194,11 +246,17 @@ export default function JoinBreakXPage() {
               </div>
 
               <div>
-                <label className="text-xs text-slate-300 font-semibold mb-2 block">Experience Level *</label>
+                <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                  Experience Level *
+                </label>
                 <select
                   value={experience}
                   onChange={(e) => setExperience(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 >
                   <option value="2 - 4 Years">2 - 4 Years</option>
                   <option value="5+ Years">5+ Years</option>
@@ -207,55 +265,87 @@ export default function JoinBreakXPage() {
               </div>
 
               <div>
-                <label className="text-xs text-slate-300 font-semibold mb-2 block">Portfolio URL</label>
+                <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                  Portfolio URL
+                </label>
                 <input
                   type="url"
                   value={portfolioUrl}
                   onChange={(e) => setPortfolioUrl(e.target.value)}
                   placeholder="https://yourportfolio.dev"
-                  className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 />
               </div>
 
               <div>
-                <label className="text-xs text-slate-300 font-semibold mb-2 block">GitHub URL</label>
+                <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                  GitHub URL
+                </label>
                 <input
                   type="url"
                   value={githubUrl}
                   onChange={(e) => setGithubUrl(e.target.value)}
                   placeholder="https://github.com/yourhandle"
-                  className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 />
               </div>
 
               <div>
-                <label className="text-xs text-slate-300 font-semibold mb-2 block">LinkedIn Profile</label>
+                <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                  LinkedIn Profile
+                </label>
                 <input
                   type="url"
                   value={linkedinUrl}
                   onChange={(e) => setLinkedinUrl(e.target.value)}
                   placeholder="https://linkedin.com/in/yourhandle"
-                  className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-xs text-slate-300 font-semibold mb-2 block">Introduction & Technical Background *</label>
+              <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                Introduction & Technical Background *
+              </label>
               <textarea
                 required
                 rows={4}
                 value={introduction}
                 onChange={(e) => setIntroduction(e.target.value)}
                 placeholder="Tell us about your technical expertise, favorite GLSL/WebGL projects, or AI engineering background..."
-                className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                  isDark
+                    ? 'bg-surface-card border-surface-border text-white'
+                    : 'bg-white border-slate-200 text-slate-900'
+                }`}
               />
             </div>
 
             {/* Resume Upload */}
             <div>
-              <label className="text-xs text-slate-300 font-semibold mb-2 block">Resume Upload (PDF, DOC, DOCX) *</label>
-              <div className="border-2 border-dashed border-surface-border hover:border-accent-purple/50 rounded-2xl p-6 text-center bg-surface-card/40 transition-colors">
+              <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                Resume Upload (PDF, DOC, DOCX) *
+              </label>
+              <div
+                className={`border-2 border-dashed rounded-2xl p-6 text-center transition-colors ${
+                  isDark
+                    ? 'border-surface-border hover:border-accent-purple/50 bg-surface-card/40'
+                    : 'border-slate-300 hover:border-purple-400 bg-slate-50'
+                }`}
+              >
                 <input
                   type="file"
                   accept=".pdf,.doc,.docx"
@@ -264,18 +354,28 @@ export default function JoinBreakXPage() {
                   id="resume-file-input"
                 />
                 <label htmlFor="resume-file-input" className="cursor-pointer flex flex-col items-center space-y-2">
-                  <div className="w-12 h-12 rounded-full bg-accent-purple/10 text-accent-purple flex items-center justify-center">
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                      isDark ? 'bg-accent-purple/10 text-accent-purple' : 'bg-purple-100 text-purple-600'
+                    }`}
+                  >
                     <Upload className="w-6 h-6" />
                   </div>
-                  <span className="text-xs font-semibold text-white">
+                  <span className={`text-xs font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     {resumeFile ? 'Click to replace resume' : 'Upload Resume File'}
                   </span>
-                  <span className="text-[11px] text-slate-400">PDF, DOC, DOCX (Max 20MB)</span>
+                  <span className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                    PDF, DOC, DOCX (Max 20MB)
+                  </span>
                 </label>
               </div>
 
               {resumeFile && (
-                <div className="mt-3 p-3 rounded-xl bg-surface border border-surface-border flex items-center justify-between text-xs text-emerald-400">
+                <div
+                  className={`mt-3 p-3 rounded-xl border flex items-center justify-between text-xs text-emerald-600 ${
+                    isDark ? 'bg-surface border-surface-border' : 'bg-emerald-50 border-emerald-200'
+                  }`}
+                >
                   <div className="flex items-center space-x-2">
                     <FileCheck className="w-4 h-4" />
                     <span>Resume attached: {resumeFile.split('/').pop()}</span>

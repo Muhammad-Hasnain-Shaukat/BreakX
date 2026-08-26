@@ -2,11 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { Shield, Sparkles, FileText, CheckCircle2, Clock, Filter, Eye, Edit3, Trash2, ExternalLink, Download, Search, AlertTriangle, Lock, Key, ArrowRight, LogOut } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function AdminPortalPage() {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<'projects' | 'seekers'>('projects');
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const [projectRequests, setProjectRequests] = useState<any[]>([]);
   const [opportunitySeekers, setOpportunitySeekers] = useState<any[]>([]);
@@ -21,7 +24,7 @@ export default function AdminPortalPage() {
   const [internalNote, setInternalNote] = useState<string>('');
   const [updateStatus, setUpdateStatus] = useState<string>('');
 
-  // Admin Login State (Empty by default, No Autowrite)
+  // Admin Login State
   const [adminIdInput, setAdminIdInput] = useState<string>('');
   const [adminPasswordInput, setAdminPasswordInput] = useState<string>('');
   const [authError, setAuthError] = useState<string>('');
@@ -151,38 +154,54 @@ export default function AdminPortalPage() {
     return (
       <div className="py-24 text-center space-y-3">
         <div className="w-8 h-8 border-2 border-accent-purple border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-xs text-slate-400">Verifying Admin permissions...</p>
+        <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Verifying Admin permissions...</p>
       </div>
     );
   }
 
-  // Admin Login Guard: Clean ID & Password Authentication Form (Zero Autowrite & Zero Displayed Credentials)
+  // Admin Login Guard
   if (!session || session.role !== 'admin') {
     return (
       <div className="py-20 max-w-md mx-auto px-4">
-        <div className="bg-[#030712] border-2 border-purple-500/50 rounded-3xl p-6 sm:p-8 shadow-[0_0_50px_rgba(168,85,247,0.3)] space-y-6 relative overflow-hidden">
+        <div
+          className={`border-2 rounded-3xl p-6 sm:p-8 space-y-6 relative overflow-hidden transition-colors ${
+            isDark
+              ? 'bg-[#030712] border-purple-500/50 shadow-[0_0_50px_rgba(168,85,247,0.3)]'
+              : 'bg-white border-purple-200 shadow-[0_20px_50px_rgba(168,85,247,0.15)]'
+          }`}
+        >
           {/* Ambient Glow */}
           <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/10 rounded-full filter blur-3xl pointer-events-none" />
 
           <div className="text-center space-y-2">
-            <div className="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/30 text-purple-400 flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+            <div
+              className={`w-14 h-14 rounded-2xl border flex items-center justify-center mx-auto ${
+                isDark
+                  ? 'bg-purple-500/10 border-purple-500/30 text-purple-400 shadow-[0_0_20px_rgba(168,85,247,0.3)]'
+                  : 'bg-purple-100 border-purple-300 text-purple-700 shadow-sm'
+              }`}
+            >
               <Shield className="w-7 h-7" />
             </div>
-            <h1 className="font-display font-bold text-2xl text-white">Admin Authentication</h1>
-            <p className="text-slate-400 text-xs">
+            <h1 className={`font-display font-bold text-2xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              Admin Authentication
+            </h1>
+            <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
               Restricted management console. Enter administrator credentials to proceed.
             </p>
           </div>
 
           {authError && (
-            <div className="p-3.5 rounded-2xl bg-red-500/15 border border-red-500/40 text-red-400 text-xs font-semibold">
+            <div className="p-3.5 rounded-2xl bg-red-500/15 border border-red-500/40 text-red-500 text-xs font-semibold">
               {authError}
             </div>
           )}
 
           <form onSubmit={handleAdminFormLogin} className="space-y-4">
             <div>
-              <label className="text-xs text-slate-300 font-bold mb-1.5 block">Admin ID</label>
+              <label className={`text-xs font-bold mb-1.5 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                Admin ID
+              </label>
               <div className="relative">
                 <input
                   type="text"
@@ -190,14 +209,20 @@ export default function AdminPortalPage() {
                   value={adminIdInput}
                   onChange={(e) => setAdminIdInput(e.target.value)}
                   placeholder="Enter administrator ID"
-                  className="w-full px-4 py-3 rounded-2xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-purple-400 transition-colors pl-10"
+                  className={`w-full px-4 py-3 rounded-2xl border text-sm focus:outline-none focus:border-purple-400 transition-colors pl-10 ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 />
                 <Shield className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
               </div>
             </div>
 
             <div>
-              <label className="text-xs text-slate-300 font-bold mb-1.5 block">Password</label>
+              <label className={`text-xs font-bold mb-1.5 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                Password
+              </label>
               <div className="relative">
                 <input
                   type="password"
@@ -205,7 +230,11 @@ export default function AdminPortalPage() {
                   value={adminPasswordInput}
                   onChange={(e) => setAdminPasswordInput(e.target.value)}
                   placeholder="Enter password"
-                  className="w-full px-4 py-3 rounded-2xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-purple-400 transition-colors pl-10"
+                  className={`w-full px-4 py-3 rounded-2xl border text-sm focus:outline-none focus:border-purple-400 transition-colors pl-10 ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 />
                 <Key className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
               </div>
@@ -234,18 +263,34 @@ export default function AdminPortalPage() {
   return (
     <div className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
       {/* Admin Header with Tab Switcher and Sign Out Button */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-surface-border">
+      <div
+        className={`flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b ${
+          isDark ? 'border-surface-border' : 'border-slate-200'
+        }`}
+      >
         <div className="space-y-1">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-accent-purple/10 border border-accent-purple/30 text-accent-purple text-xs font-semibold">
+          <div
+            className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full border text-xs font-semibold ${
+              isDark
+                ? 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple'
+                : 'bg-purple-50 border-purple-200 text-purple-700'
+            }`}
+          >
             <Shield className="w-3.5 h-3.5" />
             <span>CENTRALIZED ADMIN MANAGEMENT PORTAL</span>
           </div>
-          <h1 className="font-display font-black text-3xl text-white">BreakX System Overview</h1>
+          <h1 className={`font-display font-black text-3xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            BreakX System Overview
+          </h1>
         </div>
 
         {/* Controls & Sign Out */}
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center space-x-2 bg-surface-card p-1.5 rounded-2xl border border-surface-border">
+          <div
+            className={`flex items-center space-x-2 p-1.5 rounded-2xl border ${
+              isDark ? 'bg-surface-card border-surface-border' : 'bg-slate-100 border-slate-200 shadow-sm'
+            }`}
+          >
             <button
               onClick={() => {
                 setActiveTab('projects');
@@ -254,7 +299,9 @@ export default function AdminPortalPage() {
               className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
                 activeTab === 'projects'
                   ? 'bg-primary-600 text-white shadow-neon-blue'
-                  : 'text-slate-400 hover:text-white'
+                  : isDark
+                  ? 'text-slate-400 hover:text-white'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Projects Management ({projectRequests.length})
@@ -267,7 +314,9 @@ export default function AdminPortalPage() {
               className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
                 activeTab === 'seekers'
                   ? 'bg-accent-purple text-white shadow-neon-purple'
-                  : 'text-slate-400 hover:text-white'
+                  : isDark
+                  ? 'text-slate-400 hover:text-white'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Talent Candidates ({opportunitySeekers.length})
@@ -276,7 +325,11 @@ export default function AdminPortalPage() {
 
           <button
             onClick={handleAdminLogout}
-            className="flex items-center space-x-2 px-4 py-2.5 rounded-2xl bg-red-500/15 border border-red-500/40 text-red-300 hover:bg-red-500/25 text-xs font-bold transition-all shadow-sm hover:scale-105"
+            className={`flex items-center space-x-2 px-4 py-2.5 rounded-2xl border text-xs font-bold transition-all shadow-sm hover:scale-105 ${
+              isDark
+                ? 'bg-red-500/15 border-red-500/40 text-red-300 hover:bg-red-500/25'
+                : 'bg-red-50 border-red-200 text-red-700 hover:bg-red-100'
+            }`}
             title="Sign Out of Admin"
           >
             <LogOut className="w-4 h-4" />
@@ -287,33 +340,69 @@ export default function AdminPortalPage() {
 
       {/* Analytics Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="glass-card p-6 rounded-2xl space-y-2">
-          <span className="text-[11px] uppercase font-bold text-slate-400">Total Project Leads</span>
-          <div className="font-display font-black text-3xl text-white">{projectRequests.length}</div>
-          <p className="text-[11px] text-emerald-400 font-semibold">+24% Lead Growth this month</p>
+        <div
+          className={`glass-card p-6 rounded-2xl space-y-2 border ${
+            isDark ? 'border-surface-border' : 'border-slate-200 bg-white/90 shadow-md'
+          }`}
+        >
+          <span className={`text-[11px] uppercase font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            Total Project Leads
+          </span>
+          <div className={`font-display font-black text-3xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            {projectRequests.length}
+          </div>
+          <p className="text-[11px] text-emerald-600 font-semibold">+24% Lead Growth this month</p>
         </div>
 
-        <div className="glass-card p-6 rounded-2xl space-y-2">
-          <span className="text-[11px] uppercase font-bold text-slate-400">Talent Applicants</span>
-          <div className="font-display font-black text-3xl text-white">{opportunitySeekers.length}</div>
-          <p className="text-[11px] text-accent-cyan font-semibold">Active talent pool</p>
+        <div
+          className={`glass-card p-6 rounded-2xl space-y-2 border ${
+            isDark ? 'border-surface-border' : 'border-slate-200 bg-white/90 shadow-md'
+          }`}
+        >
+          <span className={`text-[11px] uppercase font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            Talent Applicants
+          </span>
+          <div className={`font-display font-black text-3xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            {opportunitySeekers.length}
+          </div>
+          <p className={`text-[11px] font-semibold ${isDark ? 'text-accent-cyan' : 'text-blue-600'}`}>
+            Active talent pool
+          </p>
         </div>
 
-        <div className="glass-card p-6 rounded-2xl space-y-2">
-          <span className="text-[11px] uppercase font-bold text-slate-400">Approved Pipeline Value</span>
-          <div className="font-display font-black text-3xl text-primary-400">$350,000+</div>
-          <p className="text-[11px] text-slate-400">Based on submitted estimates</p>
+        <div
+          className={`glass-card p-6 rounded-2xl space-y-2 border ${
+            isDark ? 'border-surface-border' : 'border-slate-200 bg-white/90 shadow-md'
+          }`}
+        >
+          <span className={`text-[11px] uppercase font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            Approved Pipeline Value
+          </span>
+          <div className={`font-display font-black text-3xl ${isDark ? 'text-primary-400' : 'text-blue-600'}`}>
+            $350,000+
+          </div>
+          <p className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Based on submitted estimates</p>
         </div>
 
-        <div className="glass-card p-6 rounded-2xl space-y-2">
-          <span className="text-[11px] uppercase font-bold text-slate-400">System SLA Uptime</span>
-          <div className="font-display font-black text-3xl text-emerald-400">99.98%</div>
-          <p className="text-[11px] text-slate-400">WebGL canvas & API pipeline</p>
+        <div
+          className={`glass-card p-6 rounded-2xl space-y-2 border ${
+            isDark ? 'border-surface-border' : 'border-slate-200 bg-white/90 shadow-md'
+          }`}
+        >
+          <span className={`text-[11px] uppercase font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            System SLA Uptime
+          </span>
+          <div className="font-display font-black text-3xl text-emerald-600">99.98%</div>
+          <p className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>WebGL canvas & API pipeline</p>
         </div>
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-surface-card/60 p-4 rounded-2xl border border-surface-border">
+      <div
+        className={`flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl border ${
+          isDark ? 'bg-surface-card/60 border-surface-border' : 'bg-slate-50 border-slate-200'
+        }`}
+      >
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
           <input
@@ -321,7 +410,11 @@ export default function AdminPortalPage() {
             placeholder="Search records by name, email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-xl bg-surface border border-surface-border text-white text-xs focus:outline-none focus:border-primary-500"
+            className={`w-full pl-10 pr-4 py-2 rounded-xl border text-xs focus:outline-none focus:border-primary-500 ${
+              isDark
+                ? 'bg-surface border-surface-border text-white'
+                : 'bg-white border-slate-200 text-slate-900'
+            }`}
           />
         </div>
 
@@ -330,7 +423,11 @@ export default function AdminPortalPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-surface border border-surface-border text-white text-xs focus:outline-none"
+            className={`px-3 py-2 rounded-xl border text-xs focus:outline-none ${
+              isDark
+                ? 'bg-surface border-surface-border text-white'
+                : 'bg-white border-slate-200 text-slate-900'
+            }`}
           >
             <option value="All">All Statuses</option>
             {activeTab === 'projects' ? (
@@ -353,11 +450,21 @@ export default function AdminPortalPage() {
 
       {/* Data Table */}
       {activeTab === 'projects' ? (
-        <div className="glass-card rounded-3xl border border-surface-border overflow-hidden">
+        <div
+          className={`glass-card rounded-3xl border overflow-hidden ${
+            isDark ? 'border-surface-border' : 'border-slate-200 bg-white/90 shadow-md'
+          }`}
+        >
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-surface-border bg-surface-card/80 text-[11px] uppercase tracking-wider text-slate-400 font-bold">
+                <tr
+                  className={`border-b text-[11px] uppercase tracking-wider font-bold ${
+                    isDark
+                      ? 'border-surface-border bg-surface-card/80 text-slate-400'
+                      : 'border-slate-200 bg-slate-100 text-slate-700'
+                  }`}
+                >
                   <th className="p-4">Client / Company</th>
                   <th className="p-4">Service</th>
                   <th className="p-4">Budget</th>
@@ -366,21 +473,46 @@ export default function AdminPortalPage() {
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-surface-border/60 text-xs text-slate-300">
+              <tbody
+                className={`divide-y text-xs ${
+                  isDark
+                    ? 'divide-surface-border/60 text-slate-300'
+                    : 'divide-slate-200 text-slate-700'
+                }`}
+              >
                 {filteredProjects.map((p) => (
-                  <tr key={p.id} className="hover:bg-surface-card/40 transition-colors">
+                  <tr
+                    key={p.id}
+                    className={`transition-colors ${
+                      isDark ? 'hover:bg-surface-card/40' : 'hover:bg-blue-50/50'
+                    }`}
+                  >
                     <td className="p-4">
-                      <div className="font-bold text-white">{p.name}</div>
-                      <div className="text-[11px] text-slate-400">{p.email} • {p.companyName || 'N/A'}</div>
+                      <div className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>{p.name}</div>
+                      <div className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                        {p.email} • {p.companyName || 'N/A'}
+                      </div>
                     </td>
-                    <td className="p-4 font-semibold text-primary-400">{p.serviceRequired}</td>
-                    <td className="p-4 font-mono font-bold text-slate-200">{p.projectBudget}</td>
+                    <td className={`p-4 font-semibold ${isDark ? 'text-primary-400' : 'text-blue-600'}`}>
+                      {p.serviceRequired}
+                    </td>
+                    <td className={`p-4 font-mono font-bold ${isDark ? 'text-slate-200' : 'text-slate-900'}`}>
+                      {p.projectBudget}
+                    </td>
                     <td className="p-4">
-                      <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-primary-500/10 text-primary-400 border border-primary-500/30">
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${
+                          isDark
+                            ? 'bg-primary-500/10 text-primary-400 border-primary-500/30'
+                            : 'bg-blue-50 text-blue-700 border-blue-200'
+                        }`}
+                      >
                         {p.status}
                       </span>
                     </td>
-                    <td className="p-4 text-slate-400">{new Date(p.createdAt).toLocaleDateString()}</td>
+                    <td className={`p-4 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                      {new Date(p.createdAt).toLocaleDateString()}
+                    </td>
                     <td className="p-4 text-right">
                       <button
                         onClick={() => {
@@ -388,7 +520,11 @@ export default function AdminPortalPage() {
                           setUpdateStatus(p.status);
                           setInternalNote(p.internalNotes || '');
                         }}
-                        className="px-3 py-1.5 rounded-lg bg-surface border border-surface-border text-xs font-semibold text-white hover:border-primary-500"
+                        className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${
+                          isDark
+                            ? 'bg-surface border-surface-border text-white hover:border-primary-500'
+                            : 'bg-white border-slate-200 text-slate-800 hover:border-blue-500 shadow-sm'
+                        }`}
                       >
                         Inspect & Edit
                       </button>
@@ -400,11 +536,21 @@ export default function AdminPortalPage() {
           </div>
         </div>
       ) : (
-        <div className="glass-card rounded-3xl border border-surface-border overflow-hidden">
+        <div
+          className={`glass-card rounded-3xl border overflow-hidden ${
+            isDark ? 'border-surface-border' : 'border-slate-200 bg-white/90 shadow-md'
+          }`}
+        >
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-surface-border bg-surface-card/80 text-[11px] uppercase tracking-wider text-slate-400 font-bold">
+                <tr
+                  className={`border-b text-[11px] uppercase tracking-wider font-bold ${
+                    isDark
+                      ? 'border-surface-border bg-surface-card/80 text-slate-400'
+                      : 'border-slate-200 bg-slate-100 text-slate-700'
+                  }`}
+                >
                   <th className="p-4">Candidate</th>
                   <th className="p-4">Target Role</th>
                   <th className="p-4">Experience</th>
@@ -413,17 +559,38 @@ export default function AdminPortalPage() {
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-surface-border/60 text-xs text-slate-300">
+              <tbody
+                className={`divide-y text-xs ${
+                  isDark
+                    ? 'divide-surface-border/60 text-slate-300'
+                    : 'divide-slate-200 text-slate-700'
+                }`}
+              >
                 {filteredSeekers.map((s) => (
-                  <tr key={s.id} className="hover:bg-surface-card/40 transition-colors">
+                  <tr
+                    key={s.id}
+                    className={`transition-colors ${
+                      isDark ? 'hover:bg-surface-card/40' : 'hover:bg-purple-50/50'
+                    }`}
+                  >
                     <td className="p-4">
-                      <div className="font-bold text-white">{s.name}</div>
-                      <div className="text-[11px] text-slate-400">{s.email} • {s.phone}</div>
+                      <div className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>{s.name}</div>
+                      <div className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                        {s.email} • {s.phone}
+                      </div>
                     </td>
-                    <td className="p-4 font-semibold text-accent-purple">{s.role}</td>
+                    <td className={`p-4 font-semibold ${isDark ? 'text-accent-purple' : 'text-purple-700'}`}>
+                      {s.role}
+                    </td>
                     <td className="p-4">{s.experience}</td>
                     <td className="p-4">
-                      <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-accent-purple/10 text-accent-purple border border-accent-purple/30">
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${
+                          isDark
+                            ? 'bg-accent-purple/10 text-accent-purple border-accent-purple/30'
+                            : 'bg-purple-50 text-purple-700 border-purple-200'
+                        }`}
+                      >
                         {s.status}
                       </span>
                     </td>
@@ -433,7 +600,9 @@ export default function AdminPortalPage() {
                           href={s.resumeFile}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-xs font-semibold text-primary-400 hover:underline flex items-center space-x-1"
+                          className={`text-xs font-semibold flex items-center space-x-1 ${
+                            isDark ? 'text-primary-400 hover:underline' : 'text-blue-600 hover:underline'
+                          }`}
                         >
                           <Download className="w-3.5 h-3.5" />
                           <span>Download</span>
@@ -447,7 +616,11 @@ export default function AdminPortalPage() {
                           setUpdateStatus(s.status);
                           setInternalNote(s.internalNotes || '');
                         }}
-                        className="px-3 py-1.5 rounded-lg bg-surface border border-surface-border text-xs font-semibold text-white hover:border-accent-purple"
+                        className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${
+                          isDark
+                            ? 'bg-surface border-surface-border text-white hover:border-accent-purple'
+                            : 'bg-white border-slate-200 text-slate-800 hover:border-purple-500 shadow-sm'
+                        }`}
                       >
                         Inspect & Edit
                       </button>
@@ -463,25 +636,60 @@ export default function AdminPortalPage() {
       {/* Inspect & Edit Project Modal */}
       {selectedProject && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="bg-surface border border-surface-border rounded-3xl max-w-xl w-full p-6 space-y-6">
-            <div className="flex items-center justify-between pb-4 border-b border-surface-border">
-              <h3 className="font-display font-bold text-xl text-white">Project Request Details</h3>
-              <button onClick={() => setSelectedProject(null)} className="text-slate-400 hover:text-white">✕</button>
+          <div
+            className={`border rounded-3xl max-w-xl w-full p-6 space-y-6 shadow-2xl ${
+              isDark
+                ? 'bg-surface border-surface-border'
+                : 'bg-white border-slate-200'
+            }`}
+          >
+            <div
+              className={`flex items-center justify-between pb-4 border-b ${
+                isDark ? 'border-surface-border' : 'border-slate-200'
+              }`}
+            >
+              <h3 className={`font-display font-bold text-xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                Project Request Details
+              </h3>
+              <button
+                onClick={() => setSelectedProject(null)}
+                className={`transition-colors ${isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-900'}`}
+              >
+                ✕
+              </button>
             </div>
 
-            <div className="space-y-3 text-xs text-slate-300">
-              <div><span className="text-slate-400 font-bold">Client:</span> {selectedProject.name} ({selectedProject.email})</div>
-              <div><span className="text-slate-400 font-bold">Company:</span> {selectedProject.companyName || 'N/A'}</div>
-              <div><span className="text-slate-400 font-bold">Service:</span> {selectedProject.serviceRequired}</div>
-              <div><span className="text-slate-400 font-bold">Description:</span> {selectedProject.projectDescription}</div>
+            <div className={`space-y-3 text-xs ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+              <div>
+                <span className={`font-bold ${isDark ? 'text-slate-400' : 'text-slate-900'}`}>Client:</span>{' '}
+                {selectedProject.name} ({selectedProject.email})
+              </div>
+              <div>
+                <span className={`font-bold ${isDark ? 'text-slate-400' : 'text-slate-900'}`}>Company:</span>{' '}
+                {selectedProject.companyName || 'N/A'}
+              </div>
+              <div>
+                <span className={`font-bold ${isDark ? 'text-slate-400' : 'text-slate-900'}`}>Service:</span>{' '}
+                {selectedProject.serviceRequired}
+              </div>
+              <div>
+                <span className={`font-bold ${isDark ? 'text-slate-400' : 'text-slate-900'}`}>Description:</span>{' '}
+                {selectedProject.projectDescription}
+              </div>
             </div>
 
             <div>
-              <label className="text-xs font-bold text-slate-300 block mb-2">Update Status</label>
+              <label className={`text-xs font-bold block mb-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                Update Status
+              </label>
               <select
                 value={updateStatus}
                 onChange={(e) => setUpdateStatus(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-surface-card border border-surface-border text-white text-xs focus:outline-none"
+                className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
+                  isDark
+                    ? 'bg-surface-card border-surface-border text-white'
+                    : 'bg-slate-50 border-slate-200 text-slate-900'
+                }`}
               >
                 <option value="Pending">Pending</option>
                 <option value="Reviewing">Reviewing</option>
@@ -491,19 +699,41 @@ export default function AdminPortalPage() {
             </div>
 
             <div>
-              <label className="text-xs font-bold text-slate-300 block mb-2">Internal Administrator Notes</label>
+              <label className={`text-xs font-bold block mb-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                Internal Administrator Notes
+              </label>
               <textarea
                 rows={3}
                 value={internalNote}
                 onChange={(e) => setInternalNote(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-surface-card border border-surface-border text-white text-xs focus:outline-none"
+                className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
+                  isDark
+                    ? 'bg-surface-card border-surface-border text-white'
+                    : 'bg-slate-50 border-slate-200 text-slate-900'
+                }`}
                 placeholder="Add confidential notes for team..."
               />
             </div>
 
-            <div className="flex items-center justify-end space-x-3 pt-4 border-t border-surface-border">
-              <button onClick={() => setSelectedProject(null)} className="px-4 py-2 rounded-xl bg-surface border border-surface-border text-xs">Cancel</button>
-              <button onClick={() => handleUpdateProject(selectedProject.id)} className="px-4 py-2 rounded-xl bg-primary-600 text-white font-bold text-xs">Save Changes</button>
+            <div
+              className={`flex items-center justify-end space-x-3 pt-4 border-t ${
+                isDark ? 'border-surface-border' : 'border-slate-200'
+              }`}
+            >
+              <button
+                onClick={() => setSelectedProject(null)}
+                className={`px-4 py-2 rounded-xl border text-xs ${
+                  isDark ? 'bg-surface border-surface-border text-slate-300' : 'bg-slate-100 border-slate-200 text-slate-700'
+                }`}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleUpdateProject(selectedProject.id)}
+                className="px-4 py-2 rounded-xl bg-primary-600 text-white font-bold text-xs shadow-neon-blue"
+              >
+                Save Changes
+              </button>
             </div>
           </div>
         </div>
@@ -512,25 +742,60 @@ export default function AdminPortalPage() {
       {/* Inspect & Edit Seeker Modal */}
       {selectedSeeker && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="bg-surface border border-surface-border rounded-3xl max-w-xl w-full p-6 space-y-6">
-            <div className="flex items-center justify-between pb-4 border-b border-surface-border">
-              <h3 className="font-display font-bold text-xl text-white">Candidate Details</h3>
-              <button onClick={() => setSelectedSeeker(null)} className="text-slate-400 hover:text-white">✕</button>
+          <div
+            className={`border rounded-3xl max-w-xl w-full p-6 space-y-6 shadow-2xl ${
+              isDark
+                ? 'bg-surface border-surface-border'
+                : 'bg-white border-slate-200'
+            }`}
+          >
+            <div
+              className={`flex items-center justify-between pb-4 border-b ${
+                isDark ? 'border-surface-border' : 'border-slate-200'
+              }`}
+            >
+              <h3 className={`font-display font-bold text-xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                Candidate Details
+              </h3>
+              <button
+                onClick={() => setSelectedSeeker(null)}
+                className={`transition-colors ${isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-900'}`}
+              >
+                ✕
+              </button>
             </div>
 
-            <div className="space-y-3 text-xs text-slate-300">
-              <div><span className="text-slate-400 font-bold">Candidate:</span> {selectedSeeker.name} ({selectedSeeker.email})</div>
-              <div><span className="text-slate-400 font-bold">Phone:</span> {selectedSeeker.phone}</div>
-              <div><span className="text-slate-400 font-bold">Role & Exp:</span> {selectedSeeker.role} • {selectedSeeker.experience}</div>
-              <div><span className="text-slate-400 font-bold">Intro:</span> {selectedSeeker.introduction}</div>
+            <div className={`space-y-3 text-xs ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+              <div>
+                <span className={`font-bold ${isDark ? 'text-slate-400' : 'text-slate-900'}`}>Candidate:</span>{' '}
+                {selectedSeeker.name} ({selectedSeeker.email})
+              </div>
+              <div>
+                <span className={`font-bold ${isDark ? 'text-slate-400' : 'text-slate-900'}`}>Phone:</span>{' '}
+                {selectedSeeker.phone}
+              </div>
+              <div>
+                <span className={`font-bold ${isDark ? 'text-slate-400' : 'text-slate-900'}`}>Role & Exp:</span>{' '}
+                {selectedSeeker.role} • {selectedSeeker.experience}
+              </div>
+              <div>
+                <span className={`font-bold ${isDark ? 'text-slate-400' : 'text-slate-900'}`}>Intro:</span>{' '}
+                {selectedSeeker.introduction}
+              </div>
             </div>
 
             <div>
-              <label className="text-xs font-bold text-slate-300 block mb-2">Update Candidate Status</label>
+              <label className={`text-xs font-bold block mb-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                Update Candidate Status
+              </label>
               <select
                 value={updateStatus}
                 onChange={(e) => setUpdateStatus(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-surface-card border border-surface-border text-white text-xs focus:outline-none"
+                className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
+                  isDark
+                    ? 'bg-surface-card border-surface-border text-white'
+                    : 'bg-slate-50 border-slate-200 text-slate-900'
+                }`}
               >
                 <option value="New">New</option>
                 <option value="Shortlisted">Shortlisted</option>
@@ -540,19 +805,41 @@ export default function AdminPortalPage() {
             </div>
 
             <div>
-              <label className="text-xs font-bold text-slate-300 block mb-2">Internal Candidate Notes</label>
+              <label className={`text-xs font-bold block mb-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                Internal Candidate Notes
+              </label>
               <textarea
                 rows={3}
                 value={internalNote}
                 onChange={(e) => setInternalNote(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-surface-card border border-surface-border text-white text-xs focus:outline-none"
+                className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
+                  isDark
+                    ? 'bg-surface-card border-surface-border text-white'
+                    : 'bg-slate-50 border-slate-200 text-slate-900'
+                }`}
                 placeholder="Add interview notes..."
               />
             </div>
 
-            <div className="flex items-center justify-end space-x-3 pt-4 border-t border-surface-border">
-              <button onClick={() => setSelectedSeeker(null)} className="px-4 py-2 rounded-xl bg-surface border border-surface-border text-xs">Cancel</button>
-              <button onClick={() => handleUpdateSeeker(selectedSeeker.id)} className="px-4 py-2 rounded-xl bg-accent-purple text-white font-bold text-xs">Save Changes</button>
+            <div
+              className={`flex items-center justify-end space-x-3 pt-4 border-t ${
+                isDark ? 'border-surface-border' : 'border-slate-200'
+              }`}
+            >
+              <button
+                onClick={() => setSelectedSeeker(null)}
+                className={`px-4 py-2 rounded-xl border text-xs ${
+                  isDark ? 'bg-surface border-surface-border text-slate-300' : 'bg-slate-100 border-slate-200 text-slate-700'
+                }`}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleUpdateSeeker(selectedSeeker.id)}
+                className="px-4 py-2 rounded-xl bg-accent-purple text-white font-bold text-xs shadow-neon-purple"
+              >
+                Save Changes
+              </button>
             </div>
           </div>
         </div>

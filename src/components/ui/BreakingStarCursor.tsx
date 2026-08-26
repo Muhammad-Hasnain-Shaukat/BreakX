@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+import { useTheme } from '@/context/ThemeContext';
 
 interface Particle {
   x: number;
@@ -18,6 +19,8 @@ interface Particle {
 
 export const BreakingStarCursor: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -41,13 +44,23 @@ export const BreakingStarCursor: React.FC = () => {
     window.addEventListener('resize', handleResize);
 
     const particles: Particle[] = [];
-    const colors = [
+    const darkColors = [
       '#00F0FF', // Electric Cyan
       '#38BDF8', // Sky Blue
       '#818CF8', // Indigo Flare
       '#C084FC', // Neon Purple
       '#FFFFFF', // Starlight White
     ];
+
+    const lightColors = [
+      '#2563EB', // Sapphire Blue
+      '#0284C7', // Ocean Blue
+      '#4F46E5', // Indigo
+      '#7C3AED', // Vivid Violet
+      '#0891B2', // Cyan Teal
+    ];
+
+    const activeColors = isDark ? darkColors : lightColors;
 
     let mouse = { x: -100, y: -100 };
     let lastMouse = { x: -100, y: -100 };
@@ -58,7 +71,6 @@ export const BreakingStarCursor: React.FC = () => {
     const spawnBreakingStarDust = (x: number, y: number, angle: number, speed: number) => {
       const count = Math.min(Math.floor(speed * 0.8) + 2, 8);
       for (let i = 0; i < count; i++) {
-        // Particles burst backwards and outward from the star's flight vector
         const spread = (Math.random() - 0.5) * 1.8;
         const particleAngle = angle + Math.PI + spread;
         const particleSpeed = Math.random() * (speed * 0.4 + 2) + 0.5;
@@ -71,14 +83,13 @@ export const BreakingStarCursor: React.FC = () => {
           size: Math.random() * 3 + 1.5,
           maxLife: Math.random() * 25 + 20,
           life: 0,
-          color: colors[Math.floor(Math.random() * colors.length)],
+          color: activeColors[Math.floor(Math.random() * activeColors.length)],
           rotation: Math.random() * Math.PI * 2,
           vRot: (Math.random() - 0.5) * 0.25,
           isShard: Math.random() > 0.4,
         });
       }
 
-      // Add occasional crystal shard spark
       if (speed > 4 && Math.random() > 0.6) {
         particles.push({
           x,
@@ -88,7 +99,7 @@ export const BreakingStarCursor: React.FC = () => {
           size: Math.random() * 4 + 2,
           maxLife: 35,
           life: 0,
-          color: '#00F0FF',
+          color: isDark ? '#00F0FF' : '#2563EB',
           rotation: 0,
           vRot: 0.3,
           isShard: true,
@@ -112,7 +123,6 @@ export const BreakingStarCursor: React.FC = () => {
           isMoving = true;
           lastMoveTime = performance.now();
 
-          // Spawn breaking star dust along the direction of motion
           spawnBreakingStarDust(curX, curY, moveAngle, dist);
         }
       }
@@ -125,7 +135,6 @@ export const BreakingStarCursor: React.FC = () => {
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
-    // Draw a radiant 4-point crystal star
     const draw4PointStar = (
       context: CanvasRenderingContext2D,
       cx: number,
@@ -163,7 +172,6 @@ export const BreakingStarCursor: React.FC = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
 
-      // Smoothly follow the mouse with the breaking star head
       starHead.x += (mouse.x - starHead.x) * 0.35;
       starHead.y += (mouse.y - starHead.y) * 0.35;
 
@@ -171,19 +179,25 @@ export const BreakingStarCursor: React.FC = () => {
       const timeSinceMove = now - lastMoveTime;
       const headAlpha = Math.max(0, 1 - timeSinceMove / 400);
 
-      // 1. Draw the Breaking Star Head when mouse is moving
+      // 1. Draw Breaking Star Head
       if (headAlpha > 0.05 && mouse.x > 0) {
         ctx.save();
         ctx.translate(starHead.x, starHead.y);
         ctx.rotate(starHead.angle + Math.PI / 4);
 
-        // Core Glowing Halo
         const glowRadius = Math.min(starHead.speed * 0.8 + 8, 22);
         const grad = ctx.createRadialGradient(0, 0, 1, 0, 0, glowRadius);
-        grad.addColorStop(0, `rgba(255, 255, 255, ${headAlpha * 0.95})`);
-        grad.addColorStop(0.3, `rgba(0, 240, 255, ${headAlpha * 0.8})`);
-        grad.addColorStop(0.7, `rgba(139, 92, 246, ${headAlpha * 0.4})`);
-        grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        if (isDark) {
+          grad.addColorStop(0, `rgba(255, 255, 255, ${headAlpha * 0.95})`);
+          grad.addColorStop(0.3, `rgba(0, 240, 255, ${headAlpha * 0.8})`);
+          grad.addColorStop(0.7, `rgba(139, 92, 246, ${headAlpha * 0.4})`);
+          grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        } else {
+          grad.addColorStop(0, `rgba(37, 99, 235, ${headAlpha * 0.9})`);
+          grad.addColorStop(0.4, `rgba(59, 130, 246, ${headAlpha * 0.6})`);
+          grad.addColorStop(0.8, `rgba(147, 197, 253, ${headAlpha * 0.3})`);
+          grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        }
 
         ctx.fillStyle = grad;
         ctx.beginPath();
@@ -191,25 +205,25 @@ export const BreakingStarCursor: React.FC = () => {
         ctx.fill();
 
         // 4-Point Crystal Breaking Star
-        ctx.fillStyle = `rgba(255, 255, 255, ${headAlpha})`;
+        ctx.fillStyle = isDark ? `rgba(255, 255, 255, ${headAlpha})` : `rgba(37, 99, 235, ${headAlpha})`;
         draw4PointStar(ctx, 0, 0, 4, 10, 3, (now * 0.005));
         ctx.fill();
 
         // Star Light Gleam
-        ctx.fillStyle = `rgba(0, 240, 255, ${headAlpha * 0.8})`;
+        ctx.fillStyle = isDark ? `rgba(0, 240, 255, ${headAlpha * 0.8})` : `rgba(14, 165, 233, ${headAlpha * 0.85})`;
         draw4PointStar(ctx, 0, 0, 4, 14, 1.5, -(now * 0.003));
         ctx.fill();
 
         ctx.restore();
       }
 
-      // 2. Update & Draw Shattering / Breaking Particles
+      // 2. Update & Draw Particles
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.life++;
         p.x += p.vx;
         p.y += p.vy;
-        p.vx *= 0.94; // Air resistance / deceleration
+        p.vx *= 0.94;
         p.vy *= 0.94;
         p.rotation += p.vRot;
 
@@ -227,7 +241,6 @@ export const BreakingStarCursor: React.FC = () => {
         ctx.globalAlpha = alpha;
 
         if (p.isShard) {
-          // Sharp Diamond / Crystal Shard
           ctx.fillStyle = p.color;
           ctx.beginPath();
           ctx.moveTo(0, -p.size * 1.6);
@@ -237,11 +250,9 @@ export const BreakingStarCursor: React.FC = () => {
           ctx.closePath();
           ctx.fill();
 
-          // Subtle Shard Glow
           ctx.shadowColor = p.color;
-          ctx.shadowBlur = 6;
+          ctx.shadowBlur = isDark ? 6 : 3;
         } else {
-          // Sparkling Round Star Dust
           ctx.fillStyle = p.color;
           ctx.beginPath();
           ctx.arc(0, 0, p.size * (1 - progress * 0.4), 0, Math.PI * 2);
@@ -262,13 +273,13 @@ export const BreakingStarCursor: React.FC = () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, []);
+  }, [isDark]);
 
   return (
     <canvas
       ref={canvasRef}
       className="pointer-events-none fixed inset-0 z-50 w-full h-full"
-      style={{ mixBlendMode: 'screen' }}
+      style={{ mixBlendMode: isDark ? 'screen' : 'normal' }}
     />
   );
 };

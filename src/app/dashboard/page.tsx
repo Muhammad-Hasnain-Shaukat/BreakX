@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Sparkles, FileText, CheckCircle2, Clock, ShieldAlert, Download, ExternalLink, PlusCircle, User, Briefcase, RefreshCw } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function DashboardPage() {
   const [session, setSession] = useState<any>(null);
@@ -10,6 +11,8 @@ export default function DashboardPage() {
   const [activeRole, setActiveRole] = useState<'client' | 'seeker'>('client');
   const [projectRequests, setProjectRequests] = useState<any[]>([]);
   const [seekerApplications, setSeekerApplications] = useState<any[]>([]);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -49,41 +52,70 @@ export default function DashboardPage() {
       case 'Approved':
       case 'Selected':
       case 'Completed':
-        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+        return isDark
+          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+          : 'bg-emerald-50 text-emerald-700 border-emerald-300';
       case 'Reviewing':
       case 'Shortlisted':
       case 'Reviewed':
-        return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+        return isDark
+          ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+          : 'bg-amber-50 text-amber-700 border-amber-300';
       default:
-        return 'bg-primary-500/10 text-primary-400 border-primary-500/30';
+        return isDark
+          ? 'bg-primary-500/10 text-primary-400 border-primary-500/30'
+          : 'bg-blue-50 text-blue-700 border-blue-300';
     }
   };
 
   return (
     <div className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-surface-border">
+      <div
+        className={`flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b ${
+          isDark ? 'border-surface-border' : 'border-slate-200'
+        }`}
+      >
         <div>
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/30 text-primary-400 text-xs font-semibold mb-2">
+          <div
+            className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full border text-xs font-semibold mb-2 ${
+              isDark
+                ? 'bg-primary-500/10 border-primary-500/30 text-primary-400'
+                : 'bg-blue-50 border-blue-200 text-blue-700'
+            }`}
+          >
             <Sparkles className="w-3.5 h-3.5" />
             <span>USER PORTAL DASHBOARD</span>
           </div>
-          <h1 className="font-display font-black text-3xl sm:text-4xl text-white">
-            Welcome Back, <span className="text-primary-400">{session?.fullName || 'BreakX Partner'}</span>
+          <h1
+            className={`font-display font-black text-3xl sm:text-4xl ${
+              isDark ? 'text-white' : 'text-slate-900'
+            }`}
+          >
+            Welcome Back,{' '}
+            <span className={isDark ? 'text-primary-400' : 'text-blue-600'}>
+              {session?.fullName || 'BreakX Partner'}
+            </span>
           </h1>
-          <p className="text-slate-400 text-xs sm:text-sm">
+          <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
             Track your active proposals, project milestones, and candidate application states in real-time.
           </p>
         </div>
 
         {/* View Role Switcher */}
-        <div className="flex items-center space-x-2 bg-surface-card p-1.5 rounded-2xl border border-surface-border">
+        <div
+          className={`flex items-center space-x-2 p-1.5 rounded-2xl border ${
+            isDark ? 'bg-surface-card border-surface-border' : 'bg-slate-100 border-slate-200 shadow-sm'
+          }`}
+        >
           <button
             onClick={() => setActiveRole('client')}
             className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 transition-all ${
               activeRole === 'client'
                 ? 'bg-primary-600 text-white shadow-neon-blue'
-                : 'text-slate-400 hover:text-white'
+                : isDark
+                ? 'text-slate-400 hover:text-white'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             <Briefcase className="w-3.5 h-3.5" />
@@ -94,7 +126,9 @@ export default function DashboardPage() {
             className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 transition-all ${
               activeRole === 'seeker'
                 ? 'bg-accent-purple text-white shadow-neon-purple'
-                : 'text-slate-400 hover:text-white'
+                : isDark
+                ? 'text-slate-400 hover:text-white'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             <User className="w-3.5 h-3.5" />
@@ -103,7 +137,7 @@ export default function DashboardPage() {
           {session?.role === 'admin' && (
             <Link
               href="/admin"
-              className="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:bg-amber-500/30"
+              className="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500/20 border border-amber-500/40 text-amber-600 hover:bg-amber-500/30"
             >
               Admin Portal →
             </Link>
@@ -114,13 +148,15 @@ export default function DashboardPage() {
       {loading ? (
         <div className="py-24 text-center space-y-3">
           <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xs text-slate-400">Loading your real-time portal data...</p>
+          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Loading your real-time portal data...</p>
         </div>
       ) : activeRole === 'client' ? (
         /* Client Requests Dashboard View */
         <div className="space-y-8">
           <div className="flex items-center justify-between">
-            <h2 className="font-display font-bold text-xl text-white">Your Project Proposals & Requests</h2>
+            <h2 className={`font-display font-bold text-xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              Your Project Proposals & Requests
+            </h2>
             <Link
               href="/project-request"
               className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-xs font-bold shadow-neon-blue transition-all"
@@ -131,8 +167,12 @@ export default function DashboardPage() {
           </div>
 
           {projectRequests.length === 0 ? (
-            <div className="glass-card p-12 rounded-3xl text-center space-y-4">
-              <p className="text-slate-400 text-sm">No project requests found for your account.</p>
+            <div
+              className={`glass-card p-12 rounded-3xl text-center space-y-4 border ${
+                isDark ? 'border-surface-border' : 'border-slate-200 bg-white shadow-md'
+              }`}
+            >
+              <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>No project requests found for your account.</p>
               <Link
                 href="/project-request"
                 className="inline-block px-6 py-3 rounded-xl bg-primary-600 text-white font-bold text-xs shadow-neon-blue"
@@ -147,12 +187,20 @@ export default function DashboardPage() {
                 return (
                   <div
                     key={req.id}
-                    className="glass-card p-6 sm:p-8 rounded-3xl border border-surface-border space-y-4 relative overflow-hidden"
+                    className={`glass-card p-6 sm:p-8 rounded-3xl border space-y-4 relative overflow-hidden transition-colors ${
+                      isDark ? 'border-surface-border' : 'border-slate-200 bg-white/90 shadow-md'
+                    }`}
                   >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-surface-border">
+                    <div
+                      className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b ${
+                        isDark ? 'border-surface-border' : 'border-slate-200'
+                      }`}
+                    >
                       <div>
                         <div className="flex items-center space-x-3">
-                          <h3 className="font-display font-bold text-xl text-white">{req.serviceRequired}</h3>
+                          <h3 className={`font-display font-bold text-xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                            {req.serviceRequired}
+                          </h3>
                           <span
                             className={`px-3 py-1 rounded-full border text-xs font-bold ${getStatusBadge(
                               req.status
@@ -161,24 +209,30 @@ export default function DashboardPage() {
                             ● {req.status}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-400 mt-1">
+                        <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                           Company: {req.companyName || 'N/A'} • Submitted:{' '}
                           {new Date(req.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                       <div className="text-right">
-                        <span className="text-[11px] uppercase font-bold text-slate-400 block">Budget</span>
-                        <span className="font-bold text-primary-400 text-sm">{req.projectBudget}</span>
+                        <span className={`text-[11px] uppercase font-bold block ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                          Budget
+                        </span>
+                        <span className={`font-bold text-sm ${isDark ? 'text-primary-400' : 'text-blue-600'}`}>
+                          {req.projectBudget}
+                        </span>
                       </div>
                     </div>
 
-                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    <p className={`text-xs sm:text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
                       {req.projectDescription}
                     </p>
 
                     {files.length > 0 && (
                       <div className="pt-2">
-                        <span className="text-xs font-semibold text-slate-400 block mb-2">Attached Documents:</span>
+                        <span className={`text-xs font-semibold block mb-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                          Attached Documents:
+                        </span>
                         <div className="flex flex-wrap gap-2">
                           {files.map((fileUrl: string, idx: number) => (
                             <a
@@ -186,7 +240,11 @@ export default function DashboardPage() {
                               href={fileUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="px-3 py-1.5 rounded-lg bg-surface border border-surface-border text-xs text-primary-400 hover:text-white flex items-center space-x-1"
+                              className={`px-3 py-1.5 rounded-lg border text-xs flex items-center space-x-1 transition-colors ${
+                                isDark
+                                  ? 'bg-surface border-surface-border text-primary-400 hover:text-white'
+                                  : 'bg-slate-50 border-slate-200 text-blue-600 hover:text-blue-800'
+                              }`}
                             >
                               <FileText className="w-3.5 h-3.5" />
                               <span className="truncate max-w-[180px]">{fileUrl.split('/').pop()}</span>
@@ -205,7 +263,9 @@ export default function DashboardPage() {
         /* Seeker Candidate Dashboard View */
         <div className="space-y-8">
           <div className="flex items-center justify-between">
-            <h2 className="font-display font-bold text-xl text-white">Your Candidate Applications</h2>
+            <h2 className={`font-display font-bold text-xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              Your Candidate Applications
+            </h2>
             <Link
               href="/join-breakx"
               className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-accent-purple hover:bg-accent-purple/80 text-white text-xs font-bold shadow-neon-purple transition-all"
@@ -216,8 +276,12 @@ export default function DashboardPage() {
           </div>
 
           {seekerApplications.length === 0 ? (
-            <div className="glass-card p-12 rounded-3xl text-center space-y-4">
-              <p className="text-slate-400 text-sm">No applications found for your account.</p>
+            <div
+              className={`glass-card p-12 rounded-3xl text-center space-y-4 border ${
+                isDark ? 'border-surface-border' : 'border-slate-200 bg-white shadow-md'
+              }`}
+            >
+              <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>No applications found for your account.</p>
               <Link
                 href="/join-breakx"
                 className="inline-block px-6 py-3 rounded-xl bg-accent-purple text-white font-bold text-xs shadow-neon-purple"
@@ -230,12 +294,20 @@ export default function DashboardPage() {
               {seekerApplications.map((app) => (
                 <div
                   key={app.id}
-                  className="glass-card p-6 sm:p-8 rounded-3xl border border-surface-border space-y-4"
+                  className={`glass-card p-6 sm:p-8 rounded-3xl border space-y-4 transition-colors ${
+                    isDark ? 'border-surface-border' : 'border-slate-200 bg-white/90 shadow-md'
+                  }`}
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-surface-border">
+                  <div
+                    className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b ${
+                      isDark ? 'border-surface-border' : 'border-slate-200'
+                    }`}
+                  >
                     <div>
                       <div className="flex items-center space-x-3">
-                        <h3 className="font-display font-bold text-xl text-white">{app.role}</h3>
+                        <h3 className={`font-display font-bold text-xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                          {app.role}
+                        </h3>
                         <span
                           className={`px-3 py-1 rounded-full border text-xs font-bold ${getStatusBadge(
                             app.status
@@ -244,7 +316,7 @@ export default function DashboardPage() {
                           ● {app.status}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400 mt-1">
+                      <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         Experience: {app.experience} • Applied:{' '}
                         {new Date(app.createdAt).toLocaleDateString()}
                       </p>
@@ -255,7 +327,11 @@ export default function DashboardPage() {
                         href={app.resumeFile}
                         target="_blank"
                         rel="noreferrer"
-                        className="px-4 py-2 rounded-xl bg-surface border border-surface-border text-xs font-semibold text-primary-400 hover:text-white flex items-center space-x-2"
+                        className={`px-4 py-2 rounded-xl border text-xs font-semibold flex items-center space-x-2 transition-colors ${
+                          isDark
+                            ? 'bg-surface border-surface-border text-primary-400 hover:text-white'
+                            : 'bg-slate-50 border-slate-200 text-blue-600 hover:text-blue-800'
+                        }`}
                       >
                         <Download className="w-4 h-4" />
                         <span>Preview Uploaded Resume</span>
@@ -263,7 +339,7 @@ export default function DashboardPage() {
                     )}
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-300 italic">
+                  <p className={`text-xs sm:text-sm italic ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
                     "{app.introduction}"
                   </p>
                 </div>

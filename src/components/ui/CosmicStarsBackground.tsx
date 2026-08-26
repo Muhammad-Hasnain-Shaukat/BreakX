@@ -2,10 +2,13 @@
 
 import React, { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
+import { useTheme } from '@/context/ThemeContext';
 
 export const CosmicStarsBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pathname = usePathname();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const isHomePage = pathname === '/';
 
   useEffect(() => {
@@ -20,7 +23,7 @@ export const CosmicStarsBackground: React.FC = () => {
     let width = (canvas.width = window.innerWidth * dpr);
     let height = (canvas.height = window.innerHeight * dpr);
 
-    // 1. Create sparkling cosmic stars
+    // 1. Create sparkling cosmic / crystal stardust particles
     const stars: {
       x: number;
       y: number;
@@ -31,16 +34,18 @@ export const CosmicStarsBackground: React.FC = () => {
       pulsePhase: number;
     }[] = [];
 
-    const starColors = ['#FFFFFF', '#93C5FD', '#38BDF8', '#C084FC', '#E0E7FF'];
+    const darkStarColors = ['#FFFFFF', '#93C5FD', '#38BDF8', '#C084FC', '#E0E7FF'];
+    const lightStarColors = ['#3B82F6', '#6366F1', '#06B6D4', '#8B5CF6', '#F59E0B'];
+    const activeColors = isDark ? darkStarColors : lightStarColors;
 
     for (let i = 0; i < 280; i++) {
       stars.push({
         x: Math.random() * width,
         y: Math.random() * height,
         radius: (Math.random() * 1.6 + 0.4) * dpr,
-        opacity: Math.random() * 0.8 + 0.2,
+        opacity: isDark ? Math.random() * 0.8 + 0.2 : Math.random() * 0.5 + 0.2,
         twinkleSpeed: Math.random() * 0.03 + 0.01,
-        color: starColors[Math.floor(Math.random() * starColors.length)],
+        color: activeColors[Math.floor(Math.random() * activeColors.length)],
         pulsePhase: Math.random() * Math.PI * 2,
       });
     }
@@ -68,7 +73,7 @@ export const CosmicStarsBackground: React.FC = () => {
         angle: (Math.PI / 4) + (Math.random() * 0.2 - 0.1),
         active: false,
         delay: Math.random() * 200 + 50,
-        color: i % 2 === 0 ? '#00F0FF' : '#C084FC',
+        color: isDark ? (i % 2 === 0 ? '#00F0FF' : '#C084FC') : (i % 2 === 0 ? '#2563EB' : '#9333EA'),
       });
     }
 
@@ -86,15 +91,20 @@ export const CosmicStarsBackground: React.FC = () => {
       // Render Twinkling Stars
       for (const s of stars) {
         s.pulsePhase += s.twinkleSpeed;
-        const currentOpacity = Math.max(0.15, Math.min(1.0, s.opacity + Math.sin(s.pulsePhase) * 0.4));
+        const currentOpacity = isDark
+          ? Math.max(0.15, Math.min(1.0, s.opacity + Math.sin(s.pulsePhase) * 0.4))
+          : Math.max(0.1, Math.min(0.65, s.opacity + Math.sin(s.pulsePhase) * 0.25));
 
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
         ctx.fillStyle = s.color;
         ctx.globalAlpha = currentOpacity;
 
-        if (s.radius > 1.4 * dpr) {
+        if (isDark && s.radius > 1.4 * dpr) {
           ctx.shadowBlur = 6 * dpr;
+          ctx.shadowColor = s.color;
+        } else if (!isDark && s.radius > 1.4 * dpr) {
+          ctx.shadowBlur = 4 * dpr;
           ctx.shadowColor = s.color;
         } else {
           ctx.shadowBlur = 0;
@@ -121,9 +131,15 @@ export const CosmicStarsBackground: React.FC = () => {
           const tailY = ss.y - Math.sin(ss.angle) * ss.length;
 
           const grad = ctx.createLinearGradient(tailX, tailY, ss.x, ss.y);
-          grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-          grad.addColorStop(0.7, `${ss.color}99`);
-          grad.addColorStop(1, `rgba(255, 255, 255, ${ss.opacity})`);
+          if (isDark) {
+            grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+            grad.addColorStop(0.7, `${ss.color}99`);
+            grad.addColorStop(1, `rgba(255, 255, 255, ${ss.opacity})`);
+          } else {
+            grad.addColorStop(0, 'rgba(37, 99, 235, 0)');
+            grad.addColorStop(0.7, `${ss.color}99`);
+            grad.addColorStop(1, `rgba(37, 99, 235, ${ss.opacity})`);
+          }
 
           ctx.strokeStyle = grad;
           ctx.lineWidth = 1.5 * dpr;
@@ -134,7 +150,7 @@ export const CosmicStarsBackground: React.FC = () => {
           // Bright star head
           ctx.beginPath();
           ctx.arc(ss.x, ss.y, 1.2 * dpr, 0, Math.PI * 2);
-          ctx.fillStyle = '#FFFFFF';
+          ctx.fillStyle = isDark ? '#FFFFFF' : '#2563EB';
           ctx.fill();
 
           ss.x += Math.cos(ss.angle) * ss.speed;
@@ -159,17 +175,17 @@ export const CosmicStarsBackground: React.FC = () => {
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [isDark]);
 
   return (
-    <div className="fixed inset-0 pointer-events-none -z-30 w-full h-full overflow-hidden">
+    <div className="fixed inset-0 pointer-events-none -z-30 w-full h-full overflow-hidden transition-colors duration-300">
       {/* 1. On PC (lg:), show the 3D X background for the widescreen hero */}
       {isHomePage && (
         <div
-          className="hidden lg:block absolute -inset-4 w-[calc(100%+32px)] h-[calc(100%+32px)] transform scale-[1.03]"
+          className="hidden lg:block absolute -inset-4 w-[calc(100%+32px)] h-[calc(100%+32px)] transform scale-[1.03] transition-all duration-500"
           style={{
-            backgroundColor: '#02040B',
-            backgroundImage: "url('/hero-full-bg.jpg')",
+            backgroundColor: isDark ? '#02040B' : '#F8FAFC',
+            backgroundImage: isDark ? "url('/hero-full-bg.jpg')" : "url('/hero-full-bg-light.jpg')",
             backgroundPosition: 'right 15% center',
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
@@ -180,10 +196,19 @@ export const CosmicStarsBackground: React.FC = () => {
         />
       )}
 
-      {/* 2. On mobile and all other pages, show the clean, pure dark space background (#030712) */}
-      <div className={`absolute inset-0 w-full h-full bg-[#030712] ${isHomePage ? 'lg:hidden' : 'block'}`} />
+      {/* 2. On mobile and all other pages, show clean background */}
+      <div
+        className={`absolute inset-0 w-full h-full transition-colors duration-300 ${
+          isDark ? 'bg-[#030712]' : 'bg-[#F8FAFC]'
+        } ${isHomePage ? 'lg:hidden' : 'block'}`}
+      />
 
-      {/* Retina/High-DPI Star Canvas (Simple starry sky across all pages) */}
+      {/* Ambient soft mesh gradient for light theme */}
+      {!isDark && (
+        <div className="absolute inset-0 w-full h-full bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(59,130,246,0.12),transparent_70%)] pointer-events-none" />
+      )}
+
+      {/* Retina/High-DPI Star Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
     </div>
   );

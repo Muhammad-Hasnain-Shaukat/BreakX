@@ -3,6 +3,7 @@
 import React from 'react';
 import { ShieldCheck, Zap, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
+import { useTheme } from '@/context/ThemeContext';
 
 interface DeliveredProject {
   id: string;
@@ -49,18 +50,44 @@ const projects: DeliveredProject[] = [
 ];
 
 export default function DeliveredProjectsPage() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   return (
     <div className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-surface-card/90 neon-pill text-xs font-bold tracking-wide">
-          <ShieldCheck className="w-3.5 h-3.5 text-accent-cyan" />
-          <span className="text-accent-cyan uppercase tracking-widest text-[11px]">PROVEN CLIENT SUCCESS</span>
+        <div
+          className={`inline-flex items-center space-x-2 px-4 py-1.5 rounded-full neon-pill text-xs font-bold tracking-wide ${
+            isDark ? 'bg-surface-card/90' : 'bg-white'
+          }`}
+        >
+          <ShieldCheck className={`w-3.5 h-3.5 ${isDark ? 'text-accent-cyan' : 'text-blue-600'}`} />
+          <span
+            className={`uppercase tracking-widest text-[11px] ${
+              isDark ? 'text-accent-cyan' : 'text-blue-600'
+            }`}
+          >
+            PROVEN CLIENT SUCCESS
+          </span>
         </div>
-        <h1 className="font-display font-black text-4xl sm:text-6xl text-white tracking-tight">
-          Delivered <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#60A5FA] via-[#818CF8] to-[#38BDF8] drop-shadow-[0_0_35px_rgba(96,165,250,0.7)]">Production Systems.</span>
+        <h1
+          className={`font-display font-black text-4xl sm:text-6xl tracking-tight ${
+            isDark ? 'text-white' : 'text-slate-900'
+          }`}
+        >
+          Delivered{' '}
+          <span
+            className={`text-transparent bg-clip-text ${
+              isDark
+                ? 'bg-gradient-to-r from-[#60A5FA] via-[#818CF8] to-[#38BDF8] drop-shadow-[0_0_35px_rgba(96,165,250,0.7)]'
+                : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600'
+            }`}
+          >
+            Production Systems.
+          </span>
         </h1>
-        <p className="text-slate-300 text-base sm:text-lg">
+        <p className={`text-base sm:text-lg ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
           Explore completed client deployments engineered by BreakX, complete with verified performance metrics and architecture breakdowns.
         </p>
       </div>
@@ -72,21 +99,35 @@ export default function DeliveredProjectsPage() {
             key={project.id}
             className="neon-column p-8 rounded-3xl space-y-6 relative overflow-hidden group"
           >
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-surface-border/60">
+            <div
+              className={`flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b ${
+                isDark ? 'border-surface-border/60' : 'border-slate-200'
+              }`}
+            >
               <div>
-                <span className="text-xs font-bold text-accent-cyan uppercase tracking-wider">
+                <span
+                  className={`text-xs font-bold uppercase tracking-wider ${
+                    isDark ? 'text-accent-cyan' : 'text-blue-600'
+                  }`}
+                >
                   Client: {project.client}
                 </span>
-                <h2 className="font-display font-bold text-3xl text-white mt-1">{project.name}</h2>
+                <h2 className={`font-display font-bold text-3xl mt-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  {project.name}
+                </h2>
               </div>
               <a
                 href={project.url}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-surface border border-primary-500/40 hover:border-primary-400 text-white text-xs font-bold transition-all hover:scale-105 shadow-neon-blue"
+                className={`inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl border text-xs font-bold transition-all hover:scale-105 ${
+                  isDark
+                    ? 'bg-surface border-primary-500/40 hover:border-primary-400 text-white shadow-neon-blue'
+                    : 'bg-white border-slate-200 hover:border-blue-400 text-slate-800 shadow-sm'
+                }`}
               >
                 <span>Visit Live System</span>
-                <ArrowUpRight className="w-4 h-4 text-accent-cyan" />
+                <ArrowUpRight className={`w-4 h-4 ${isDark ? 'text-accent-cyan' : 'text-blue-600'}`} />
               </a>
             </div>
 
@@ -95,10 +136,16 @@ export default function DeliveredProjectsPage() {
               {project.metrics.map((metric, i) => (
                 <div
                   key={i}
-                  className="p-4 rounded-2xl bg-surface/80 border border-primary-500/30 flex items-center space-x-3"
+                  className={`p-4 rounded-2xl border flex items-center space-x-3 ${
+                    isDark
+                      ? 'bg-surface/80 border-primary-500/30'
+                      : 'bg-white border-slate-200 shadow-sm'
+                  }`}
                 >
-                  <Zap className="w-5 h-5 text-amber-400 shrink-0" />
-                  <span className="font-extrabold text-white text-sm">{metric}</span>
+                  <Zap className="w-5 h-5 text-amber-500 shrink-0" />
+                  <span className={`font-extrabold text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {metric}
+                  </span>
                 </div>
               ))}
             </div>
@@ -106,19 +153,34 @@ export default function DeliveredProjectsPage() {
             {/* Architecture & Feedback */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
               <div className="space-y-2">
-                <h4 className="text-xs uppercase font-extrabold text-slate-300 tracking-wider">
+                <h4 className={`text-xs uppercase font-extrabold tracking-wider ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   Technical Architecture
                 </h4>
-                <p className="text-xs text-slate-200 font-mono bg-surface/80 p-3.5 rounded-xl border border-surface-border">
+                <p
+                  className={`text-xs font-mono p-3.5 rounded-xl border ${
+                    isDark
+                      ? 'text-slate-200 bg-surface/80 border-surface-border'
+                      : 'text-slate-700 bg-slate-100 border-slate-200'
+                  }`}
+                >
                   {project.architecture}
                 </p>
               </div>
               <div className="space-y-2">
-                <h4 className="text-xs uppercase font-extrabold text-slate-300 tracking-wider">
+                <h4 className={`text-xs uppercase font-extrabold tracking-wider ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   Client Feedback
                 </h4>
-                <div className="p-3.5 rounded-xl bg-primary-500/10 border border-primary-500/30 text-xs text-slate-200 italic">
-                  "{project.testimonial}" — <span className="font-bold not-italic text-white">{project.author}</span>
+                <div
+                  className={`p-3.5 rounded-xl border text-xs italic ${
+                    isDark
+                      ? 'bg-primary-500/10 border-primary-500/30 text-slate-200'
+                      : 'bg-blue-50/80 border-blue-200 text-slate-700'
+                  }`}
+                >
+                  "{project.testimonial}" —{' '}
+                  <span className={`font-bold not-italic ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {project.author}
+                  </span>
                 </div>
               </div>
             </div>

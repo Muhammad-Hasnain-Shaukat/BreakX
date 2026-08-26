@@ -3,8 +3,12 @@
 import React from 'react';
 import { LitImageEffect } from '@/components/ui/LitImageEffect';
 import { Sparkles, Milestone } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function AboutPage() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   const milestones = [
     {
       year: '2022',
@@ -61,26 +65,57 @@ export default function AboutPage() {
     <div className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
       {/* Hero Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-surface-card/90 neon-pill text-xs font-bold tracking-wide">
-          <Sparkles className="w-3.5 h-3.5 text-accent-cyan" />
-          <span className="text-accent-cyan uppercase tracking-widest text-[11px]">OUR STORY & EVOLUTION</span>
+        <div
+          className={`inline-flex items-center space-x-2 px-4 py-1.5 rounded-full neon-pill text-xs font-bold tracking-wide ${
+            isDark ? 'bg-surface-card/90' : 'bg-white'
+          }`}
+        >
+          <Sparkles className={`w-3.5 h-3.5 ${isDark ? 'text-accent-cyan' : 'text-blue-600'}`} />
+          <span
+            className={`uppercase tracking-widest text-[11px] ${
+              isDark ? 'text-accent-cyan' : 'text-blue-600'
+            }`}
+          >
+            OUR STORY & EVOLUTION
+          </span>
         </div>
-        <h1 className="font-display font-black text-4xl sm:text-6xl text-white tracking-tight">
-          Architects of the <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#60A5FA] via-[#818CF8] to-[#38BDF8] drop-shadow-[0_0_35px_rgba(96,165,250,0.7)]">Next Web.</span>
+        <h1
+          className={`font-display font-black text-4xl sm:text-6xl tracking-tight ${
+            isDark ? 'text-white' : 'text-slate-900'
+          }`}
+        >
+          Architects of the{' '}
+          <span
+            className={`text-transparent bg-clip-text ${
+              isDark
+                ? 'bg-gradient-to-r from-[#60A5FA] via-[#818CF8] to-[#38BDF8] drop-shadow-[0_0_35px_rgba(96,165,250,0.7)]'
+                : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600'
+            }`}
+          >
+            Next Web.
+          </span>
         </h1>
-        <p className="text-slate-300 text-base sm:text-lg">
+        <p className={`text-base sm:text-lg ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
           We combine cutting-edge WebGL shader graphics, full-stack engineering discipline, and custom AI orchestration to craft digital experiences that outperform.
         </p>
       </div>
 
-      {/* Timeline Section with Large, Uncompressed Image Boxes */}
+      {/* Timeline Section */}
       <div className="space-y-12">
         <div className="text-center">
-          <h2 className="font-display font-bold text-3xl text-white">Company Evolution & Milestones</h2>
-          <p className="text-xs text-accent-cyan mt-1 font-semibold">Highlighted with BreakX LitImageEffect shader badges</p>
+          <h2 className={`font-display font-bold text-3xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            Company Evolution & Milestones
+          </h2>
+          <p className={`text-xs mt-1 font-semibold ${isDark ? 'text-accent-cyan' : 'text-blue-600'}`}>
+            Highlighted with BreakX LitImageEffect shader badges
+          </p>
         </div>
 
-        <div className="space-y-12 relative before:absolute before:inset-0 before:left-1/2 before:-ml-px before:w-0.5 before:bg-primary-500/30">
+        <div
+          className={`space-y-12 relative before:absolute before:inset-0 before:left-1/2 before:-ml-px before:w-0.5 ${
+            isDark ? 'before:bg-primary-500/30' : 'before:bg-blue-300/40'
+          }`}
+        >
           {milestones.map((m, idx) => (
             <div
               key={m.year}
@@ -90,17 +125,27 @@ export default function AboutPage() {
               <div className="w-full lg:w-1/2 px-2 sm:px-4 lg:px-8">
                 <div className="neon-column p-8 rounded-3xl space-y-5">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-extrabold px-4 py-1.5 rounded-full bg-primary-500/20 text-accent-cyan border border-primary-500/40 shadow-neon-blue">
+                    <span
+                      className={`text-xs font-extrabold px-4 py-1.5 rounded-full border shadow-sm ${
+                        isDark
+                          ? 'bg-primary-500/20 text-accent-cyan border-primary-500/40 shadow-neon-blue'
+                          : 'bg-blue-100 text-blue-800 border-blue-300'
+                      }`}
+                    >
                       {m.year}
                     </span>
-                    <Milestone className="w-5 h-5 text-primary-400" />
+                    <Milestone className={`w-5 h-5 ${isDark ? 'text-primary-400' : 'text-blue-600'}`} />
                   </div>
-                  <h3 className="font-display font-bold text-2xl text-white">{m.title}</h3>
-                  <p className="text-slate-300 text-sm sm:text-base leading-relaxed">{m.description}</p>
+                  <h3 className={`font-display font-bold text-2xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {m.title}
+                  </h3>
+                  <p className={`text-sm sm:text-base leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                    {m.description}
+                  </p>
                 </div>
               </div>
 
-              {/* Large, Expansive Image Box (Uncompressed 16:9 / 16:10 aspect ratio) */}
+              {/* Image Box */}
               <div className="w-full lg:w-1/2 px-2 sm:px-4 lg:px-8">
                 <div className="rounded-3xl overflow-hidden neon-pill shadow-2xl border border-primary-500/40">
                   <LitImageEffect
@@ -119,10 +164,12 @@ export default function AboutPage() {
       </div>
 
       {/* Leadership Bios */}
-      <div className="pt-12 border-t border-surface-border space-y-12">
+      <div className={`pt-12 border-t space-y-12 ${isDark ? 'border-surface-border' : 'border-slate-200'}`}>
         <div className="text-center max-w-2xl mx-auto space-y-2">
-          <h2 className="font-display font-bold text-3xl text-white">Leadership & Craftsmanship</h2>
-          <p className="text-slate-300 text-xs sm:text-sm">
+          <h2 className={`font-display font-bold text-3xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            Leadership & Craftsmanship
+          </h2>
+          <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
             Engineers and designers driven by obsessive quality.
           </p>
         </div>
@@ -139,10 +186,16 @@ export default function AboutPage() {
                 className="w-28 h-28 rounded-full mx-auto object-cover border-2 border-primary-400 ring-4 ring-primary-500/30 shadow-neon-blue group-hover:scale-105 transition-transform"
               />
               <div>
-                <h3 className="font-display font-bold text-xl text-white">{member.name}</h3>
-                <p className="text-xs font-extrabold text-accent-cyan mt-1">{member.role}</p>
+                <h3 className={`font-display font-bold text-xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  {member.name}
+                </h3>
+                <p className={`text-xs font-extrabold mt-1 ${isDark ? 'text-accent-cyan' : 'text-blue-600'}`}>
+                  {member.role}
+                </p>
               </div>
-              <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">{member.bio}</p>
+              <p className={`text-xs sm:text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                {member.bio}
+              </p>
             </div>
           ))}
         </div>

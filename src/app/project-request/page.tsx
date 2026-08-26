@@ -3,11 +3,14 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Sparkles, Upload, FileText, CheckCircle2, ArrowRight, X, AlertCircle } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 
 function ProjectRequestForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const preselectedService = searchParams.get('service') || 'Website Development';
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -24,7 +27,6 @@ function ProjectRequestForm() {
   const [success, setSuccess] = useState<boolean>(false);
 
   useEffect(() => {
-    // Prefill user details if logged in
     fetch('/api/auth/me')
       .then((res) => res.json())
       .then((data) => {
@@ -108,34 +110,59 @@ function ProjectRequestForm() {
     <div className="py-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
       {/* Header */}
       <div className="text-center space-y-4">
-        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/30 text-primary-400 text-xs font-semibold">
+        <div
+          className={`inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border text-xs font-semibold ${
+            isDark
+              ? 'bg-primary-500/10 border-primary-500/30 text-primary-400'
+              : 'bg-blue-50 border-blue-200 text-blue-700'
+          }`}
+        >
           <Sparkles className="w-3.5 h-3.5" />
           <span>START YOUR PROJECT</span>
         </div>
-        <h1 className="font-display font-black text-4xl sm:text-5xl text-white tracking-tight">
-          Request a Project <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-cyan">Proposal.</span>
+        <h1
+          className={`font-display font-black text-4xl sm:text-5xl tracking-tight ${
+            isDark ? 'text-white' : 'text-slate-900'
+          }`}
+        >
+          Request a Project{' '}
+          <span
+            className={`text-transparent bg-clip-text ${
+              isDark
+                ? 'bg-gradient-to-r from-primary-400 to-accent-cyan'
+                : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600'
+            }`}
+          >
+            Proposal.
+          </span>
         </h1>
-        <p className="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
+        <p className={`text-sm sm:text-base max-w-xl mx-auto ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
           Fill out your project specifications below. Our technical engineering lead will review your details and send a complete architectural estimate.
         </p>
       </div>
 
       {/* Form Container */}
-      <div className="glass-card p-8 sm:p-12 rounded-3xl border border-surface-border relative overflow-hidden">
+      <div
+        className={`glass-card p-8 sm:p-12 rounded-3xl border relative overflow-hidden transition-colors ${
+          isDark ? 'border-surface-border' : 'border-slate-200 shadow-xl bg-white/90'
+        }`}
+      >
         {success ? (
           <div className="py-16 text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500 text-emerald-400 flex items-center justify-center mx-auto animate-bounce">
+            <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500 text-emerald-500 flex items-center justify-center mx-auto animate-bounce">
               <CheckCircle2 className="w-8 h-8" />
             </div>
-            <h2 className="font-display font-bold text-2xl text-white">Project Request Submitted!</h2>
-            <p className="text-slate-400 text-xs sm:text-sm">
+            <h2 className={`font-display font-bold text-2xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              Project Request Submitted!
+            </h2>
+            <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
               Redirecting to your BreakX Client Dashboard...
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium flex items-center space-x-2">
+              <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-medium flex items-center space-x-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{error}</span>
               </div>
@@ -144,7 +171,7 @@ function ProjectRequestForm() {
             {/* Inputs Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="text-xs text-slate-300 font-semibold mb-2 block">
+                <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   Full Name *
                 </label>
                 <input
@@ -153,12 +180,16 @@ function ProjectRequestForm() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Sarah Jenkins"
-                  className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 />
               </div>
 
               <div>
-                <label className="text-xs text-slate-300 font-semibold mb-2 block">
+                <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   Work Email *
                 </label>
                 <input
@@ -167,12 +198,16 @@ function ProjectRequestForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="sarah@company.com"
-                  className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 />
               </div>
 
               <div>
-                <label className="text-xs text-slate-300 font-semibold mb-2 block">
+                <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   Company / Organization
                 </label>
                 <input
@@ -180,18 +215,26 @@ function ProjectRequestForm() {
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   placeholder="Acme Corp"
-                  className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 />
               </div>
 
               <div>
-                <label className="text-xs text-slate-300 font-semibold mb-2 block">
+                <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   Service Required *
                 </label>
                 <select
                   value={serviceRequired}
                   onChange={(e) => setServiceRequired(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 >
                   <option value="Website Development">Website & Web App Development</option>
                   <option value="AI Solution">Bespoke AI Solution & RAG</option>
@@ -202,13 +245,17 @@ function ProjectRequestForm() {
               </div>
 
               <div>
-                <label className="text-xs text-slate-300 font-semibold mb-2 block">
+                <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   Estimated Budget *
                 </label>
                 <select
                   value={projectBudget}
                   onChange={(e) => setProjectBudget(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 >
                   <option value="$10,000 - $25,000">$10,000 - $25,000</option>
                   <option value="$25,000 - $50,000">$25,000 - $50,000</option>
@@ -218,13 +265,17 @@ function ProjectRequestForm() {
               </div>
 
               <div>
-                <label className="text-xs text-slate-300 font-semibold mb-2 block">
+                <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   Target Timeline
                 </label>
                 <select
                   value={projectDeadline}
                   onChange={(e) => setProjectDeadline(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                    isDark
+                      ? 'bg-surface-card border-surface-border text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 >
                   <option value="2 - 4 Weeks">2 - 4 Weeks (Rush)</option>
                   <option value="4 - 6 Weeks">4 - 6 Weeks (Standard)</option>
@@ -236,7 +287,7 @@ function ProjectRequestForm() {
 
             {/* Description */}
             <div>
-              <label className="text-xs text-slate-300 font-semibold mb-2 block">
+              <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                 Project Overview & Requirements *
               </label>
               <textarea
@@ -245,16 +296,26 @@ function ProjectRequestForm() {
                 value={projectDescription}
                 onChange={(e) => setProjectDescription(e.target.value)}
                 placeholder="Describe your project goals, core features, target users, and technical constraints..."
-                className="w-full px-4 py-3 rounded-xl bg-surface-card border border-surface-border text-white text-sm focus:outline-none focus:border-primary-500"
+                className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
+                  isDark
+                    ? 'bg-surface-card border-surface-border text-white'
+                    : 'bg-white border-slate-200 text-slate-900'
+                }`}
               />
             </div>
 
             {/* File Upload Pipeline */}
             <div>
-              <label className="text-xs text-slate-300 font-semibold mb-2 block">
+              <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                 Attach Specs / Wireframes / Guidelines (Multi-file + Mobile Camera)
               </label>
-              <div className="border-2 border-dashed border-surface-border hover:border-primary-500/50 rounded-2xl p-6 text-center bg-surface-card/40 transition-colors">
+              <div
+                className={`border-2 border-dashed rounded-2xl p-6 text-center transition-colors ${
+                  isDark
+                    ? 'border-surface-border hover:border-primary-500/50 bg-surface-card/40'
+                    : 'border-slate-300 hover:border-blue-400 bg-slate-50'
+                }`}
+              >
                 <input
                   type="file"
                   multiple
@@ -267,13 +328,17 @@ function ProjectRequestForm() {
                   htmlFor="project-file-input"
                   className="cursor-pointer flex flex-col items-center justify-center space-y-2"
                 >
-                  <div className="w-12 h-12 rounded-full bg-primary-500/10 text-primary-400 flex items-center justify-center">
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                      isDark ? 'bg-primary-500/10 text-primary-400' : 'bg-blue-100 text-blue-600'
+                    }`}
+                  >
                     <Upload className="w-6 h-6" />
                   </div>
-                  <span className="text-xs font-semibold text-white">
+                  <span className={`text-xs font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     Click to upload documents or take photo
                   </span>
-                  <span className="text-[11px] text-slate-400">
+                  <span className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                     Supports PDF, DOCX, PNG, JPG, JSON (Max 50MB)
                   </span>
                 </label>
@@ -285,16 +350,20 @@ function ProjectRequestForm() {
                   {attachedFiles.map((url, i) => (
                     <div
                       key={i}
-                      className="flex items-center justify-between p-3 rounded-xl bg-surface border border-surface-border text-xs text-slate-300"
+                      className={`flex items-center justify-between p-3 rounded-xl border text-xs ${
+                        isDark
+                          ? 'bg-surface border-surface-border text-slate-300'
+                          : 'bg-slate-50 border-slate-200 text-slate-700'
+                      }`}
                     >
                       <div className="flex items-center space-x-2 truncate">
-                        <FileText className="w-4 h-4 text-primary-400 shrink-0" />
+                        <FileText className={`w-4 h-4 shrink-0 ${isDark ? 'text-primary-400' : 'text-blue-600'}`} />
                         <span className="truncate">{url.split('/').pop()}</span>
                       </div>
                       <button
                         type="button"
                         onClick={() => removeFile(i)}
-                        className="p-1 text-slate-400 hover:text-red-400 rounded"
+                        className="p-1 text-slate-400 hover:text-red-500 rounded"
                       >
                         <X className="w-4 h-4" />
                       </button>
