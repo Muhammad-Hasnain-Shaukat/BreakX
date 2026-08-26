@@ -79,12 +79,12 @@ export default function WorkPage() {
       </div>
 
       {/* Grid of Portfolio Items */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
         {filteredStudies.map((study) => (
           <div
             key={study.id}
             onClick={() => setSelectedStudy(study)}
-            className="neon-column rounded-3xl overflow-hidden p-6 space-y-6 cursor-pointer group"
+            className="neon-column rounded-3xl overflow-hidden p-4 sm:p-6 space-y-4 sm:space-y-6 cursor-pointer group"
           >
             <div className="relative rounded-2xl overflow-hidden">
               <LitImageEffect
@@ -92,11 +92,11 @@ export default function WorkPage() {
                 glowColorPrimary={study.glowPrimary}
                 glowColorSecondary={study.glowSecondary}
                 intensity={1.25}
-                className="w-full h-72 sm:h-80 lg:h-96"
+                className="w-full aspect-[16/10] sm:aspect-[16/9] md:h-72 lg:h-80"
                 alt={study.title}
               />
               <div
-                className={`absolute top-4 left-4 px-3.5 py-1.5 rounded-full backdrop-blur-md text-xs font-extrabold shadow-md ${
+                className={`absolute top-3 left-3 sm:top-4 sm:left-4 px-3 py-1 rounded-full backdrop-blur-md text-[11px] sm:text-xs font-extrabold shadow-md ${
                   isDark
                     ? 'bg-background/90 neon-pill text-accent-cyan'
                     : 'bg-white/95 border border-blue-300 text-blue-700'
@@ -106,13 +106,13 @@ export default function WorkPage() {
               </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               <div className="flex items-center justify-between text-xs">
                 <span className={`font-bold ${isDark ? 'text-primary-400' : 'text-blue-600'}`}>
                   {study.client}
                 </span>
                 <span
-                  className={`px-3 py-1 rounded-full font-semibold ${
+                  className={`px-2.5 py-0.5 rounded-full font-semibold text-[11px] ${
                     isDark
                       ? 'bg-surface border border-surface-border text-slate-300'
                       : 'bg-slate-100 border border-slate-200 text-slate-700'
@@ -122,7 +122,7 @@ export default function WorkPage() {
                 </span>
               </div>
               <h3
-                className={`font-display font-bold text-2xl group-hover:text-primary-500 transition-colors ${
+                className={`font-display font-bold text-xl sm:text-2xl group-hover:text-primary-500 transition-colors ${
                   isDark ? 'text-white' : 'text-slate-900'
                 }`}
               >
@@ -134,7 +134,7 @@ export default function WorkPage() {
             </div>
 
             <div
-              className={`pt-4 border-t flex items-center justify-between ${
+              className={`pt-3.5 border-t flex items-center justify-between ${
                 isDark ? 'border-surface-border/60' : 'border-slate-200'
               }`}
             >
@@ -142,7 +142,7 @@ export default function WorkPage() {
                 {study.techStack.map((tech) => (
                   <span
                     key={tech}
-                    className={`px-3 py-1 rounded-lg text-[11px] font-medium border ${
+                    className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-medium border ${
                       isDark
                         ? 'bg-surface border-surface-border text-slate-300'
                         : 'bg-slate-100 border-slate-200 text-slate-700'
@@ -170,7 +170,7 @@ export default function WorkPage() {
       {selectedStudy && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex items-center justify-center p-4">
           <div
-            className={`border rounded-3xl max-w-2xl w-full p-8 space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto ${
+            className={`border rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto ${
               isDark
                 ? 'bg-[#030712] border-primary-500/50 shadow-neon-blue'
                 : 'bg-white border-blue-200 shadow-[0_20px_60px_rgba(0,0,0,0.15)]'
@@ -186,7 +186,7 @@ export default function WorkPage() {
                   {selectedStudy.category}
                 </span>
                 <h2
-                  className={`font-display font-bold text-2xl mt-1 ${
+                  className={`font-display font-bold text-xl sm:text-2xl mt-1 ${
                     isDark ? 'text-white' : 'text-slate-900'
                   }`}
                 >
@@ -211,7 +211,7 @@ export default function WorkPage() {
                 glowColorPrimary={selectedStudy.glowPrimary}
                 glowColorSecondary={selectedStudy.glowSecondary}
                 intensity={1.5}
-                className="w-full h-80 sm:h-96"
+                className="w-full aspect-[16/10] sm:aspect-[16/9] md:h-80"
                 alt={selectedStudy.title}
               />
             </div>

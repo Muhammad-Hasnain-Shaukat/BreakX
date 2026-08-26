@@ -123,7 +123,7 @@ export default function AboutPage() {
             >
               {/* Text Card */}
               <div className="w-full lg:w-1/2 px-2 sm:px-4 lg:px-8">
-                <div className="neon-column p-8 rounded-3xl space-y-5">
+                <div className="neon-column p-5 sm:p-8 rounded-3xl space-y-4 sm:space-y-5">
                   <div className="flex items-center justify-between">
                     <span
                       className={`text-xs font-extrabold px-4 py-1.5 rounded-full border shadow-sm ${
@@ -136,10 +136,10 @@ export default function AboutPage() {
                     </span>
                     <Milestone className={`w-5 h-5 ${isDark ? 'text-primary-400' : 'text-blue-600'}`} />
                   </div>
-                  <h3 className={`font-display font-bold text-2xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  <h3 className={`font-display font-bold text-xl sm:text-2xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     {m.title}
                   </h3>
-                  <p className={`text-sm sm:text-base leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                  <p className={`text-xs sm:text-base leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
                     {m.description}
                   </p>
                 </div>
@@ -153,7 +153,7 @@ export default function AboutPage() {
                     glowColorPrimary={m.glow}
                     glowColorSecondary="#8B5CF6"
                     intensity={1.25}
-                    className="w-full h-72 sm:h-80 lg:h-96 object-cover"
+                    className="w-full aspect-[16/10] sm:aspect-[16/9] md:h-72 lg:h-80 object-cover"
                     alt={m.title}
                   />
                 </div>
@@ -178,15 +178,15 @@ export default function AboutPage() {
           {team.map((member) => (
             <div
               key={member.name}
-              className="neon-column p-8 rounded-3xl space-y-5 text-center group hover:scale-[1.02] transition-transform"
+              className="neon-column p-6 sm:p-8 rounded-3xl space-y-4 sm:space-y-5 text-center group hover:scale-[1.02] transition-transform"
             >
               <img
                 src={member.avatar}
                 alt={member.name}
-                className="w-28 h-28 rounded-full mx-auto object-cover border-2 border-primary-400 ring-4 ring-primary-500/30 shadow-neon-blue group-hover:scale-105 transition-transform"
+                className="w-24 h-24 sm:w-28 sm:h-28 rounded-full mx-auto object-cover border-2 border-primary-400 ring-4 ring-primary-500/30 shadow-neon-blue group-hover:scale-105 transition-transform"
               />
               <div>
-                <h3 className={`font-display font-bold text-xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                <h3 className={`font-display font-bold text-lg sm:text-xl ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   {member.name}
                 </h3>
                 <p className={`text-xs font-extrabold mt-1 ${isDark ? 'text-accent-cyan' : 'text-blue-600'}`}>

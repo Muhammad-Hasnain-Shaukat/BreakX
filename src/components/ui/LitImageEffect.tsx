@@ -39,6 +39,7 @@ export const LitImageEffect: React.FC<LitImageEffectProps> = ({
   const [webglSupported, setWebglSupported] = useState<boolean>(true);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const mousePosRef = useRef<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
+  const imageDimensionsRef = useRef<{ width: number; height: number }>({ width: 1200, height: 800 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -108,7 +109,7 @@ export const LitImageEffect: React.FC<LitImageEffectProps> = ({
       gl.STATIC_DRAW
     );
 
-    // Properly aligned UV buffer with right-side-up orientation
+    // UV buffer with normalized coordinates
     const uvBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
     gl.bufferData(
@@ -140,6 +141,7 @@ export const LitImageEffect: React.FC<LitImageEffectProps> = ({
     const uHasEmissionLoc = gl.getUniformLocation(program, 'u_hasEmissionMap');
     const uTimeLoc = gl.getUniformLocation(program, 'u_time');
     const uResolutionLoc = gl.getUniformLocation(program, 'u_resolution');
+    const uImageResolutionLoc = gl.getUniformLocation(program, 'u_imageResolution');
     const uMouseLoc = gl.getUniformLocation(program, 'u_mouse');
     const uIntensityLoc = gl.getUniformLocation(program, 'u_intensity');
     const uColorPrimaryLoc = gl.getUniformLocation(program, 'u_glowColorPrimary');
@@ -152,6 +154,11 @@ export const LitImageEffect: React.FC<LitImageEffectProps> = ({
 
     baseImg.onload = () => {
       if (!isMounted) return;
+      imageDimensionsRef.current = {
+        width: baseImg.naturalWidth || baseImg.width || 1200,
+        height: baseImg.naturalHeight || baseImg.height || 800,
+      };
+
       baseTexture = gl.createTexture();
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, baseTexture);
@@ -195,8 +202,8 @@ export const LitImageEffect: React.FC<LitImageEffectProps> = ({
       const width = containerRef.current.clientWidth;
       const height = containerRef.current.clientHeight || width * 0.6;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
+      canvas.width = Math.max(width * dpr, 1);
+      canvas.height = Math.max(height * dpr, 1);
       gl.viewport(0, 0, canvas.width, canvas.height);
     };
 
@@ -213,6 +220,7 @@ export const LitImageEffect: React.FC<LitImageEffectProps> = ({
       gl.useProgram(program);
       gl.uniform1f(uTimeLoc, currentTime);
       gl.uniform2f(uResolutionLoc, canvas.width, canvas.height);
+      gl.uniform2f(uImageResolutionLoc, imageDimensionsRef.current.width, imageDimensionsRef.current.height);
       gl.uniform2f(uMouseLoc, mousePosRef.current.x, mousePosRef.current.y);
       gl.uniform1f(uIntensityLoc, intensity);
       gl.uniform3f(uColorPrimaryLoc, rgbPrimary[0], rgbPrimary[1], rgbPrimary[2]);
@@ -243,7 +251,7 @@ export const LitImageEffect: React.FC<LitImageEffectProps> = ({
     if (!interactive || !containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width;
-    const y = 1.0 - (e.clientY - rect.top) / rect.height; // Inverted for WebGL Y
+    const y = 1.0 - (e.clientY - rect.top) / rect.height;
     mousePosRef.current = { x, y };
   };
 
@@ -257,13 +265,13 @@ export const LitImageEffect: React.FC<LitImageEffectProps> = ({
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className={`relative overflow-hidden rounded-2xl ${className}`}
+      className={`relative overflow-hidden rounded-2xl w-full ${className}`}
     >
       {webglSupported ? (
         <>
           <canvas
             ref={canvasRef}
-            className={`w-full h-full object-cover transition-opacity duration-700 ${
+            className={`w-full h-full object-cover transition-opacity duration-700 block ${
               isLoaded ? 'opacity-100' : 'opacity-0'
             }`}
           />
@@ -280,7 +288,7 @@ export const LitImageEffect: React.FC<LitImageEffectProps> = ({
         <img
           src={src}
           alt={alt}
-          className="w-full h-full object-cover rounded-2xl"
+          className="w-full h-full object-cover rounded-2xl block"
           loading="lazy"
         />
       )}

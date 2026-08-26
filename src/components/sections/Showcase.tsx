@@ -39,7 +39,7 @@ export const sampleCaseStudies: CaseStudy[] = [
     client: 'Pulse Health',
     metric: '99.99% HIPAA Uptime',
     description: 'Real-time doctor appointment booking and patient analytics platform with WebGL light visualization.',
-    imageSrc: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80',
+    imageSrc: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1200&q=80',
     techStack: ['React 18', 'WebGL Shaders', 'Node.js', 'Prisma'],
     glowPrimary: '#8B5CF6',
     glowSecondary: '#EC4899',
@@ -82,10 +82,10 @@ export const ShowcaseSection: React.FC = () => {
       : sampleCaseStudies.filter((item) => item.category === activeCategory);
 
   return (
-    <section id="showcase" className="py-24 relative overflow-hidden">
+    <section id="showcase" className="py-16 sm:py-24 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12">
           <div className="space-y-3">
             <div
               className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-semibold ${
@@ -135,24 +135,24 @@ export const ShowcaseSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Showcase Grid with Large, Expansive Image Boxes */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Showcase Grid with Responsive Proportions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {filteredStudies.map((study) => (
             <div
               key={study.id}
-              className="glass-card glass-card-hover rounded-3xl overflow-hidden p-6 flex flex-col justify-between space-y-5 group"
+              className="glass-card glass-card-hover rounded-3xl overflow-hidden p-4 sm:p-6 flex flex-col justify-between space-y-4 sm:space-y-5 group"
             >
-              <div className="relative">
+              <div className="relative rounded-2xl overflow-hidden">
                 <LitImageEffect
                   src={study.imageSrc}
                   glowColorPrimary={study.glowPrimary}
                   glowColorSecondary={study.glowSecondary}
                   intensity={1.25}
-                  className="w-full h-72 sm:h-80 lg:h-96"
+                  className="w-full aspect-[16/10] sm:aspect-[16/9] md:h-72 lg:h-80"
                   alt={study.title}
                 />
                 <div
-                  className={`absolute top-4 left-4 px-3.5 py-1.5 rounded-full backdrop-blur-md text-xs font-extrabold shadow-lg ${
+                  className={`absolute top-3 left-3 sm:top-4 sm:left-4 px-3 py-1 rounded-full backdrop-blur-md text-[11px] sm:text-xs font-extrabold shadow-lg ${
                     isDark
                       ? 'bg-background/90 border border-white/10 text-primary-400'
                       : 'bg-white/95 border border-slate-200 text-blue-700'
@@ -162,13 +162,13 @@ export const ShowcaseSection: React.FC = () => {
                 </div>
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <span className={`font-bold ${isDark ? 'text-primary-400' : 'text-blue-600'}`}>
                     {study.client}
                   </span>
                   <span
-                    className={`px-3 py-1 rounded-full font-medium ${
+                    className={`px-2.5 py-0.5 rounded-full font-medium text-[11px] ${
                       isDark
                         ? 'bg-surface border border-surface-border text-slate-300'
                         : 'bg-slate-100 border border-slate-200 text-slate-700'
@@ -178,7 +178,7 @@ export const ShowcaseSection: React.FC = () => {
                   </span>
                 </div>
                 <h3
-                  className={`font-display font-bold text-2xl group-hover:text-primary-500 transition-colors ${
+                  className={`font-display font-bold text-xl sm:text-2xl group-hover:text-primary-500 transition-colors ${
                     isDark ? 'text-white' : 'text-slate-900'
                   }`}
                 >
@@ -190,7 +190,7 @@ export const ShowcaseSection: React.FC = () => {
               </div>
 
               <div
-                className={`pt-4 border-t flex items-center justify-between ${
+                className={`pt-3.5 border-t flex items-center justify-between ${
                   isDark ? 'border-surface-border' : 'border-slate-200'
                 }`}
               >
@@ -198,7 +198,7 @@ export const ShowcaseSection: React.FC = () => {
                   {study.techStack.map((tech) => (
                     <span
                       key={tech}
-                      className={`px-2.5 py-1 rounded-md text-[11px] font-medium border ${
+                      className={`px-2 py-0.5 rounded-md text-[10px] sm:text-[11px] font-medium border ${
                         isDark
                           ? 'bg-surface text-slate-300 border-surface-border'
                           : 'bg-slate-100 text-slate-700 border-slate-200'

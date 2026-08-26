@@ -20,6 +20,7 @@ export const lightEmissionFragmentShader = `
   uniform bool u_hasEmissionMap;
   uniform float u_time;
   uniform vec2 u_resolution;
+  uniform vec2 u_imageResolution;
   uniform vec2 u_mouse;
   uniform float u_intensity;
   uniform vec3 u_glowColorPrimary;
@@ -42,13 +43,30 @@ export const lightEmissionFragmentShader = `
     return mix(a, b, u.x) + (c - a)* u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
   }
 
+  // Calculate object-fit: cover UV coordinates to prevent stretching/distortion
+  vec2 getCoverUv(vec2 uv, vec2 canvasRes, vec2 imgRes) {
+    if (canvasRes.x <= 0.0 || canvasRes.y <= 0.0 || imgRes.x <= 0.0 || imgRes.y <= 0.0) {
+      return uv;
+    }
+    float canvasAspect = canvasRes.x / canvasRes.y;
+    float imgAspect = imgRes.x / imgRes.y;
+    
+    vec2 ratio = vec2(
+      min(canvasAspect / imgAspect, 1.0),
+      min(imgAspect / canvasAspect, 1.0)
+    );
+    
+    return (uv - 0.5) * ratio + 0.5;
+  }
+
   void main() {
-    vec4 baseColor = texture2D(u_texture, vUv);
+    vec2 coverUv = getCoverUv(vUv, u_resolution, u_imageResolution);
+    vec4 baseColor = texture2D(u_texture, coverUv);
     
     // Calculate light emission mask (either from u_emissionMap or procedural luminosity threshold)
     float emissionMask = 0.0;
     if (u_hasEmissionMap) {
-      vec4 maskSample = texture2D(u_emissionMap, vUv);
+      vec4 maskSample = texture2D(u_emissionMap, coverUv);
       emissionMask = maskSample.r;
     } else {
       // Extract bright highlights from the image to automatically form an emission mask
@@ -57,7 +75,7 @@ export const lightEmissionFragmentShader = `
     }
 
     // Distance to mouse pointer for interactive light spotlight
-    vec2 aspectUv = (vUv - 0.5) * vec2(u_resolution.x / u_resolution.y, 1.0) + 0.5;
+    vec2 aspectUv = (coverUv - 0.5) * vec2(u_resolution.x / u_resolution.y, 1.0) + 0.5;
     vec2 aspectMouse = (u_mouse - 0.5) * vec2(u_resolution.x / u_resolution.y, 1.0) + 0.5;
     float distToMouse = length(aspectUv - aspectMouse);
     float mouseSpotlight = smoothstep(0.45, 0.0, distToMouse);
@@ -73,10 +91,10 @@ export const lightEmissionFragmentShader = `
     float rayFade = smoothstep(0.8, 0.1, length(delta));
 
     // Combine noise wave for light shimmer
-    float shimmerNoise = noise(vUv * 8.0 + vec2(u_time * 0.5, u_time * 0.3));
+    float shimmerNoise = noise(coverUv * 8.0 + vec2(u_time * 0.5, u_time * 0.3));
 
     // Dynamic light color blend
-    float colorMixFactor = sin(u_time * 0.8 + vUv.x * 2.0) * 0.5 + 0.5;
+    float colorMixFactor = sin(u_time * 0.8 + coverUv.x * 2.0) * 0.5 + 0.5;
     vec3 activeGlowColor = mix(u_glowColorPrimary, u_glowColorSecondary, colorMixFactor);
 
     // Total light emission calculation
@@ -89,7 +107,7 @@ export const lightEmissionFragmentShader = `
     vec3 glowingResult = baseColor.rgb + (activeGlowColor * lightEnergy * 1.4);
     
     // Add subtle ambient edge bloom
-    float edgeBloom = smoothstep(0.8, 1.0, length(vUv - 0.5)) * 0.15 * pulse;
+    float edgeBloom = smoothstep(0.8, 1.0, length(coverUv - 0.5)) * 0.15 * pulse;
     glowingResult += u_glowColorPrimary * edgeBloom;
 
     gl_FragColor = vec4(glowingResult, baseColor.a);
