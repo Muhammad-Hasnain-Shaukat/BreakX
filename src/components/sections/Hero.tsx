@@ -12,7 +12,7 @@ export const HeroSection: React.FC = () => {
   const isDark = theme === 'dark';
 
   return (
-    <section className="relative min-h-[85vh] lg:min-h-[88vh] flex flex-col justify-center items-center overflow-hidden pt-2 pb-8 sm:py-8 lg:py-14">
+    <section className="relative min-h-[85vh] lg:min-h-[88vh] flex flex-col justify-center items-center overflow-hidden pt-1 pb-6 sm:py-8 lg:py-14">
       {/* 3D Minimalist Ambient Glow Engine */}
       <Minimal3DBackground />
 
@@ -76,13 +76,13 @@ export const HeroSection: React.FC = () => {
               BreakX is an elite digital engineering studio building WebGL platforms, bespoke AI solutions, and automated workflows for ambitious brands worldwide.
             </p>
 
-            {/* Two Identical Sized Buttons in Same Row */}
-            <div className="flex flex-row items-center gap-4 pt-1 max-w-md">
+            {/* Two Identical-Sized Buttons in Strict CSS Grid (Equal Length) */}
+            <div className="grid grid-cols-2 gap-3.5 pt-1 w-full max-w-md">
               <Link
                 href="/project-request"
-                className="group flex-1 h-13 py-3.5 px-6 rounded-full bg-gradient-to-r from-primary-600 via-primary-500 to-accent-purple text-white font-bold text-sm shadow-neon-blue hover:shadow-neon-purple transition-all duration-300 flex items-center justify-center space-x-2.5 hover:scale-105 border border-primary-400/40"
+                className="w-full h-13 py-3.5 px-4 rounded-full bg-gradient-to-r from-primary-600 via-primary-500 to-accent-purple text-white font-bold text-sm shadow-neon-blue hover:shadow-neon-purple transition-all duration-300 flex items-center justify-center space-x-2 hover:scale-[1.03] border border-primary-400/40 box-border text-center"
               >
-                <span className="truncate">Start Your Project</span>
+                <span className="truncate">Start Project</span>
                 <div className="w-6 h-6 rounded-full bg-white/20 flex-shrink-0 flex items-center justify-center group-hover:rotate-45 transition-transform">
                   <ArrowUpRight className="w-3.5 h-3.5 text-white" />
                 </div>
@@ -90,9 +90,9 @@ export const HeroSection: React.FC = () => {
 
               <Link
                 href="/work"
-                className={`group flex-1 h-13 py-3.5 px-6 rounded-full font-bold text-sm transition-all duration-300 flex items-center justify-center space-x-2.5 hover:scale-105 backdrop-blur-xl ${
+                className={`w-full h-13 py-3.5 px-4 rounded-full font-bold text-sm transition-all duration-300 flex items-center justify-center space-x-2 hover:scale-[1.03] backdrop-blur-xl box-border text-center ${
                   isDark
-                    ? 'bg-[#030712]/85 border border-cyan-400/50 text-white shadow-[0_0_18px_rgba(0,240,255,0.25)] hover:border-[#00F0FF] hover:shadow-[0_0_30px_rgba(0,240,255,0.45)]'
+                    ? 'bg-[#050B18]/90 border border-cyan-400/50 text-white shadow-[0_0_18px_rgba(0,240,255,0.25)] hover:border-[#00F0FF] hover:shadow-[0_0_30px_rgba(0,240,255,0.45)]'
                     : 'bg-white/95 border border-slate-300 text-slate-800 shadow-[0_4px_20px_rgba(37,99,235,0.12)] hover:border-blue-500 hover:shadow-[0_6px_25px_rgba(37,99,235,0.2)]'
                 }`}
               >
@@ -149,12 +149,12 @@ export const HeroSection: React.FC = () => {
 
 
         {/* =========================================================================
-            MOBILE LAYOUT (< lg): Perfect Order to Fit in 1st Mobile Screen
-            1. Tagline Bar -> 2. 3D Computer Device -> 3. Headline -> 4. Description -> 5. Buttons (Same Row)
+            MOBILE LAYOUT (< lg): Optimized First Screen Flow
+            1. Tagline Bar -> 2. 3D Computer Console -> 3. Stacked Headline -> 4. Subtitle -> 5. Buttons (Grid 50/50)
            ========================================================================= */}
-        <div className="lg:hidden flex flex-col items-center text-center space-y-3.5 max-w-lg mx-auto">
+        <div className="lg:hidden flex flex-col items-center text-center space-y-3 max-w-sm mx-auto">
           {/* 1. Tagline Badge */}
-          <div className="inline-flex items-center">
+          <div className="inline-flex items-center pt-1">
             <div
               className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wide backdrop-blur-xl transition-all duration-300 ${
                 isDark
@@ -169,39 +169,41 @@ export const HeroSection: React.FC = () => {
             </div>
           </div>
 
-          {/* 2. 3D Computer Device (Directly under the bar, scaled for mobile) */}
-          <div className="w-full flex justify-center py-1">
-            <CyberComputingDevice3D />
+          {/* 2. Sleek Compact Computer Console (Front-facing & perfectly centered) */}
+          <div className="w-full flex justify-center py-0.5">
+            <CyberComputingDevice3D isMobileCompact={true} />
           </div>
 
-          {/* 3. Headline */}
-          <h1 className="font-display font-black text-3xl sm:text-4xl tracking-tight leading-tight">
-            <span className={isDark ? 'text-white' : 'text-slate-900'}>BREAK </span>
-            <span
-              className={`text-transparent bg-clip-text ${
-                isDark
-                  ? 'bg-gradient-to-r from-[#00F0FF] via-[#60A5FA] to-[#C084FC]'
-                  : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600'
-              }`}
-            >
-              THE ORDINARY.
-            </span>
-          </h1>
+          {/* 3. Bold Stacked Headline */}
+          <div className="space-y-0.5 pt-0.5">
+            <h1 className="font-display font-black text-3xl sm:text-4xl tracking-tight leading-none">
+              <span className={isDark ? 'text-white' : 'text-slate-900'}>BREAK </span>
+              <span
+                className={`text-transparent bg-clip-text ${
+                  isDark
+                    ? 'bg-gradient-to-r from-[#00F0FF] via-[#60A5FA] to-[#C084FC]'
+                    : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600'
+                }`}
+              >
+                THE ORDINARY.
+              </span>
+            </h1>
+          </div>
 
           {/* 4. Description */}
           <p
-            className={`font-normal text-xs sm:text-sm max-w-sm mx-auto leading-snug ${
+            className={`font-normal text-xs max-w-[290px] mx-auto leading-relaxed ${
               isDark ? 'text-slate-300' : 'text-slate-600'
             }`}
           >
             BreakX builds high-performance WebGL platforms, bespoke AI solutions, and automated workflows.
           </p>
 
-          {/* 5. Two Identical Sized Buttons in the Same Row */}
-          <div className="flex flex-row items-center justify-center gap-2.5 w-full max-w-xs sm:max-w-sm pt-1">
+          {/* 5. Two Equal-Length Buttons in Strict 50/50 CSS Grid */}
+          <div className="grid grid-cols-2 gap-2.5 w-full max-w-[310px] mx-auto pt-1">
             <Link
               href="/project-request"
-              className="flex-1 h-11 py-2.5 px-3 rounded-full bg-gradient-to-r from-primary-600 via-primary-500 to-accent-purple text-white font-bold text-xs shadow-neon-blue flex items-center justify-center space-x-1.5 border border-primary-400/40"
+              className="w-full h-11 px-2.5 rounded-full bg-gradient-to-r from-primary-600 via-primary-500 to-accent-purple text-white font-bold text-xs shadow-neon-blue flex items-center justify-center space-x-1.5 border border-primary-400/40 box-border text-center"
             >
               <span className="truncate">Start Project</span>
               <div className="w-5 h-5 rounded-full bg-white/20 flex-shrink-0 flex items-center justify-center">
@@ -211,9 +213,9 @@ export const HeroSection: React.FC = () => {
 
             <Link
               href="/work"
-              className={`flex-1 h-11 py-2.5 px-3 rounded-full font-bold text-xs flex items-center justify-center space-x-1.5 backdrop-blur-xl border ${
+              className={`w-full h-11 px-2.5 rounded-full font-bold text-xs flex items-center justify-center space-x-1.5 backdrop-blur-xl border box-border text-center ${
                 isDark
-                  ? 'bg-[#030712]/85 border-cyan-400/50 text-white shadow-[0_0_12px_rgba(0,240,255,0.2)]'
+                  ? 'bg-[#050B18]/90 border-cyan-400/50 text-white shadow-[0_0_12px_rgba(0,240,255,0.2)]'
                   : 'bg-white/95 border-slate-300 text-slate-800 shadow-sm'
               }`}
             >
@@ -230,17 +232,17 @@ export const HeroSection: React.FC = () => {
         </div>
 
         {/* 6. Minimalist Trusted Companies Strip */}
-        <div id="clients" className="mt-10 lg:mt-14 pt-5 border-t border-white/5">
+        <div id="clients" className="mt-8 lg:mt-14 pt-4 border-t border-white/5">
           <p
-            className={`text-center text-[9px] sm:text-[10px] uppercase tracking-widest font-extrabold mb-4 ${
+            className={`text-center text-[9px] sm:text-[10px] uppercase tracking-widest font-extrabold mb-3.5 ${
               isDark ? 'text-cyan-300/80' : 'text-blue-600/80'
             }`}
           >
             TRUSTED BY INNOVATIVE COMPANIES WORLDWIDE
           </p>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5 sm:gap-3.5 items-center justify-items-center">
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3.5 items-center justify-items-center max-w-4xl mx-auto">
             <div
-              className={`w-full text-center py-2 px-2.5 rounded-xl sm:rounded-2xl font-display font-black text-xs sm:text-sm flex items-center justify-center space-x-1 transition-all ${
+              className={`w-full text-center py-2 px-2 rounded-xl sm:rounded-2xl font-display font-black text-[11px] sm:text-sm flex items-center justify-center space-x-1 transition-all ${
                 isDark
                   ? 'bg-surface-card/60 border border-slate-800 text-white hover:border-cyan-400/50'
                   : 'bg-white/80 border border-slate-200 text-slate-800 shadow-sm hover:border-blue-400'
@@ -249,7 +251,7 @@ export const HeroSection: React.FC = () => {
               <span className="text-amber-400">⚡</span> <span>ACME</span>
             </div>
             <div
-              className={`w-full text-center py-2 px-2.5 rounded-xl sm:rounded-2xl font-display font-bold text-xs sm:text-sm flex items-center justify-center space-x-1 transition-all ${
+              className={`w-full text-center py-2 px-2 rounded-xl sm:rounded-2xl font-display font-bold text-[11px] sm:text-sm flex items-center justify-center space-x-1 transition-all ${
                 isDark
                   ? 'bg-surface-card/60 border border-slate-800 text-white hover:border-cyan-400/50'
                   : 'bg-white/80 border border-slate-200 text-slate-800 shadow-sm hover:border-blue-400'
@@ -258,7 +260,7 @@ export const HeroSection: React.FC = () => {
               <span className="text-cyan-400">✦</span> <span>visionary</span>
             </div>
             <div
-              className={`w-full text-center py-2 px-2.5 rounded-xl sm:rounded-2xl font-display font-black text-xs sm:text-sm uppercase tracking-widest flex items-center justify-center transition-all ${
+              className={`w-full text-center py-2 px-2 rounded-xl sm:rounded-2xl font-display font-black text-[11px] sm:text-sm uppercase tracking-widest flex items-center justify-center transition-all ${
                 isDark
                   ? 'bg-surface-card/60 border border-slate-800 text-white hover:border-cyan-400/50'
                   : 'bg-white/80 border border-slate-200 text-slate-800 shadow-sm hover:border-blue-400'
@@ -267,7 +269,7 @@ export const HeroSection: React.FC = () => {
               PULSE
             </div>
             <div
-              className={`w-full text-center py-2 px-2.5 rounded-xl sm:rounded-2xl font-display font-bold text-xs sm:text-sm flex items-center justify-center space-x-1 transition-all ${
+              className={`w-full text-center py-2 px-2 rounded-xl sm:rounded-2xl font-display font-bold text-[11px] sm:text-sm flex items-center justify-center space-x-1 transition-all ${
                 isDark
                   ? 'bg-surface-card/60 border border-slate-800 text-white hover:border-cyan-400/50'
                   : 'bg-white/80 border border-slate-200 text-slate-800 shadow-sm hover:border-blue-400'
@@ -276,7 +278,7 @@ export const HeroSection: React.FC = () => {
               <span className="text-purple-400">▲</span> <span>VERTEX</span>
             </div>
             <div
-              className={`w-full text-center py-2 px-2.5 rounded-xl sm:rounded-2xl font-display font-semibold text-xs sm:text-sm tracking-wider flex items-center justify-center space-x-1 transition-all ${
+              className={`w-full text-center py-2 px-2 rounded-xl sm:rounded-2xl font-display font-semibold text-[11px] sm:text-sm tracking-wider flex items-center justify-center space-x-1 transition-all ${
                 isDark
                   ? 'bg-surface-card/60 border border-slate-800 text-white hover:border-cyan-400/50'
                   : 'bg-white/80 border border-slate-200 text-slate-800 shadow-sm hover:border-blue-400'
@@ -285,7 +287,7 @@ export const HeroSection: React.FC = () => {
               <span className="text-cyan-400">⚛</span> <span>Spherule</span>
             </div>
             <div
-              className={`w-full text-center py-2 px-2.5 rounded-xl sm:rounded-2xl font-display font-bold text-xs sm:text-sm flex items-center justify-center space-x-1 transition-all ${
+              className={`w-full text-center py-2 px-2 rounded-xl sm:rounded-2xl font-display font-bold text-[11px] sm:text-sm flex items-center justify-center space-x-1 transition-all ${
                 isDark
                   ? 'bg-surface-card/60 border border-slate-800 text-white hover:border-cyan-400/50'
                   : 'bg-white/80 border border-slate-200 text-slate-800 shadow-sm hover:border-blue-400'
