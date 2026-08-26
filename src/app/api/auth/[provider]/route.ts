@@ -37,28 +37,43 @@ export async function GET(
       path: '/',
     });
 
-    // Check if OAuth provider credentials exist in environment
+    // 1. Google OAuth Check
     if (provider === 'google') {
-      if (process.env.GOOGLE_CLIENT_ID) {
-        return NextResponse.redirect(getGoogleAuthUrl(state, baseUrl));
+      if (!process.env.GOOGLE_CLIENT_ID) {
+        return NextResponse.redirect(
+          `${baseUrl}/?auth_error=${encodeURIComponent(
+            'Google OAuth requires GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET. Please add them to your environment variables to enable real Google Account sign-in.'
+          )}`
+        );
       }
-    } else if (provider === 'github') {
-      if (process.env.GITHUB_CLIENT_ID) {
-        return NextResponse.redirect(getGitHubAuthUrl(state, baseUrl));
-      }
-    } else if (provider === 'linkedin') {
-      if (process.env.LINKEDIN_CLIENT_ID) {
-        return NextResponse.redirect(getLinkedInAuthUrl(state, baseUrl));
-      }
-    } else {
-      return NextResponse.json({ error: `Unsupported provider: ${provider}` }, { status: 400 });
+      return NextResponse.redirect(getGoogleAuthUrl(state, baseUrl));
     }
 
-    // Fallback: If credentials are not yet entered in environment, provide instant developer demo callback
-    const fallbackUrl = new URL(`${baseUrl}/api/auth/callback/${provider}`);
-    fallbackUrl.searchParams.set('code', 'demo_code');
-    fallbackUrl.searchParams.set('state', state);
-    return NextResponse.redirect(fallbackUrl.toString());
+    // 2. GitHub OAuth Check
+    if (provider === 'github') {
+      if (!process.env.GITHUB_CLIENT_ID) {
+        return NextResponse.redirect(
+          `${baseUrl}/?auth_error=${encodeURIComponent(
+            'GitHub OAuth requires GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET in your environment variables to enable real GitHub account sign-in.'
+          )}`
+        );
+      }
+      return NextResponse.redirect(getGitHubAuthUrl(state, baseUrl));
+    }
+
+    // 3. LinkedIn OAuth Check
+    if (provider === 'linkedin') {
+      if (!process.env.LINKEDIN_CLIENT_ID) {
+        return NextResponse.redirect(
+          `${baseUrl}/?auth_error=${encodeURIComponent(
+            'LinkedIn OAuth requires LINKEDIN_CLIENT_ID and LINKEDIN_CLIENT_SECRET in your environment variables to enable real LinkedIn account sign-in.'
+          )}`
+        );
+      }
+      return NextResponse.redirect(getLinkedInAuthUrl(state, baseUrl));
+    }
+
+    return NextResponse.json({ error: `Unsupported provider: ${provider}` }, { status: 400 });
   } catch (error: any) {
     console.error('OAuth Initiation Error:', error);
     return NextResponse.json({ error: error.message || 'Failed to initiate OAuth' }, { status: 500 });

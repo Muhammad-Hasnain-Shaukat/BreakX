@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Sparkles, Upload, FileText, CheckCircle2, ArrowRight, X, AlertCircle } from 'lucide-react';
+import { Sparkles, Upload, FileText, CheckCircle2, ArrowRight, X, AlertCircle, ShieldCheck } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
 interface UploadedFileItem {
@@ -19,6 +19,8 @@ function ProjectRequestForm() {
 
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
+  const [isVerifiedAccount, setIsVerifiedAccount] = useState<boolean>(false);
+  const [authProvider, setAuthProvider] = useState<string>('');
   const [companyName, setCompanyName] = useState<string>('');
   const [serviceRequired, setServiceRequired] = useState<string>(preselectedService);
   const [projectBudget, setProjectBudget] = useState<string>('$25,000 - $50,000');
@@ -38,6 +40,8 @@ function ProjectRequestForm() {
         if (data.user) {
           setName(data.user.fullName || '');
           setEmail(data.user.email || '');
+          setIsVerifiedAccount(true);
+          setAuthProvider(data.user.provider || 'Google');
         }
       })
       .catch(() => {});
@@ -203,19 +207,32 @@ function ProjectRequestForm() {
               </div>
 
               <div>
-                <label className={`text-xs font-semibold mb-2 block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                  Work Email *
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className={`text-xs font-semibold block ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                    Work Email *
+                  </label>
+                  {isVerifiedAccount && (
+                    <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-600">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span className="capitalize">Verified {authProvider}</span>
+                    </span>
+                  )}
+                </div>
                 <input
                   type="email"
                   required
+                  readOnly={isVerifiedAccount}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="sarah@company.com"
-                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary-500 transition-colors ${
-                    isDark
-                      ? 'bg-surface-card border-surface-border text-white'
-                      : 'bg-white border-slate-200 text-slate-900'
+                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none transition-colors ${
+                    isVerifiedAccount
+                      ? isDark
+                        ? 'bg-surface/80 border-emerald-500/40 text-emerald-300 cursor-not-allowed'
+                        : 'bg-emerald-50/60 border-emerald-300 text-emerald-900 cursor-not-allowed font-medium'
+                      : isDark
+                      ? 'bg-surface-card border-surface-border text-white focus:border-primary-500'
+                      : 'bg-white border-slate-200 text-slate-900 focus:border-blue-500'
                   }`}
                 />
               </div>
